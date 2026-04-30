@@ -211,10 +211,10 @@
             if (window.supabase) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } catch (e) { console.error("Error inicializando BD:", e); }
 
-        const TICKET_PRICE = 200; // Actualizado a 200
+        const TICKET_PRICE = 200; 
         const TOTAL_TICKETS = 100; 
 
-        const ADMIN_WHATSAPP = "525512345678"; 
+        const ADMIN_WHATSAPP = "524775874578"; // Número actualizado con formato internacional
         let selectedTickets = [];
 
         // FUNCIÓN PARA GALERÍA
@@ -317,6 +317,7 @@
             const nums = [...selectedTickets].sort().join(', ');
             const total = selectedTickets.length * TICKET_PRICE;
             const msg = `¡Hola Sorteos Trébol! 🍀\n\nQuiero apartar estos números:\n✨ *Boletos:* ${nums}\n👤 *Nombre:* ${name}\n📞 *WhatsApp:* ${phone}\n💰 *Total a pagar:* $${total} MXN`;
+            // El API de wa.me requiere el número sin símbolos como el '+' para mayor compatibilidad
             window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
