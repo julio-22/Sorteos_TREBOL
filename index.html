@@ -94,7 +94,6 @@
                     </div>
                     <div id="thumb-grid" class="flex justify-center gap-4">
                         <img src="https://m.media-amazon.com/images/I/51E+vNtCsCL._AC_SX342_SY445_QL70_ML2_.jpg" onclick="changeImg(this)" class="thumb-btn cursor-pointer rounded-lg border-2 border-orange-500 hover:opacity-80 transition w-20 h-20 object-contain p-1 bg-gray-50">
-                        <!-- Se eliminaron las imágenes de celulares negros genéricos -->
                     </div>
                 </div>
                 <div>
@@ -160,7 +159,7 @@
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-gray-100 pb-6">
                 <div>
                     <h2 class="text-4xl font-bebas text-gray-800 tracking-wide mb-1">Selecciona tus números</h2>
-                    <p class="text-gray-500 text-sm">Los números en <strong class="text-red-500">rojo</strong> ya no están disponibles. Precio por boleto: <strong class="text-green-600">$50 MXN</strong></p>
+                    <p class="text-gray-500 text-sm">Los números en <strong class="text-red-500">rojo</strong> ya no están disponibles. Precio por boleto: <strong class="text-green-600">$200 MXN</strong></p>
                 </div>
                 <div class="bg-gray-50 p-1.5 rounded-xl shadow-inner flex items-center w-full md:w-64 border border-gray-200">
                     <span class="pl-3 pr-2 text-gray-400">🔍</span>
@@ -212,7 +211,7 @@
             if (window.supabase) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } catch (e) { console.error("Error inicializando BD:", e); }
 
-        const TICKET_PRICE = 50;           
+        const TICKET_PRICE = 200; // Actualizado a 200
         const TOTAL_TICKETS = 100; 
 
         const ADMIN_WHATSAPP = "525512345678"; 
