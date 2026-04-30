@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control — TRÉBOL 777</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 p-6 min-h-screen flex flex-col items-center">
+
+    <!-- FORMULARIO DE LOGIN -->
+    <div id="login-form" class="w-full max-w-md mx-auto bg-white p-8 rounded-xl shadow-lg mt-20">
+        <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">🔐 Admin Login</h2>
+        <div class="mb-4">
+            <label class="block text-gray-600 text-sm mb-1">Correo Electrónico</label>
+            <input type="email" id="email" placeholder="ejemplo@correo.com" class="w-full p-3 border border-gray-300 rounded focus:border-blue-500 outline-none" value="panter.akamc@gmail.com">
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-600 text-sm mb-1">Contraseña</label>
+            <input type="password" id="password" placeholder="••••••••" class="w-full p-3 border border-gray-300 rounded focus:border-blue-500 outline-none">
+        </div>
+        <button onclick="login()" class="w-full bg-[#1e3a8a] hover:bg-blue-900 text-white py-3 rounded font-bold text-lg transition-colors">Entrar</button>
+        <p id="login-error" class="text-red-500 text-center mt-4 text-sm hidden"></p>
+    </div>
+
+    <!-- PANEL DE ADMINISTRACIÓN -->
+    <div id="admin-panel" class="hidden w-full max-w-6xl mx-auto mt-10">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-6 rounded-lg shadow gap-4">
+            <h1 class="text-3xl font-bold text-gray-800">📊 Gestión de Boletos</h1>
+            <div class="flex items-center gap-4">
+                <span id="admin-uid" class="text-xs text-gray-400 font-mono hidden md:inline">UID: 847bfff5-4994-47d5-8540-62f5f6db4b10</span>
+                <button onclick="openModal()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-md shadow transition font-bold">
+                    ➕ Nuevo Registro
+                </button>
+                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2.5 rounded-md shadow transition">Cerrar Sesión</button>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-800 text-white">
+                        <tr>
+                            <th class="p-4 font-semibold">Cliente</th>
+                            <th class="p-4 font-semibold">WhatsApp</th>
+                            <th class="p-4 font-semibold">Boletos</th>
+                            <th class="p-4 font-semibold">Estado de Pago</th>
+                            <th class="p-4 font-semibold text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-table" class="divide-y divide-gray-200">
+                        <!-- Los datos se inyectan aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE FORMULARIO (Crear/Editar) -->
+    <div id="crud-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all">
+            <div class="bg-gray-800 text-white p-4 flex justify-between items-center">
+                <h3 id="modal-title" class="text-xl font-bold">Añadir/Editar Registro</h3>
+                <button onclick="closeModal()" class="text-gray-300 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            <div class="p-6">
+                <form id="record-form" onsubmit="event.preventDefault(); saveRecord();">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nombre Completo</label>
+                        <input type="text" id="form-name" class="w-full p-3 border rounded outline-none focus:border-blue-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Número de WhatsApp</label>
+                        <input type="text" id="form-phone" class="w-full p-3 border rounded outline-none focus:border-blue-500 bg-gray-50" placeholder="+525512345678" required>
+                        <p class="text-xs text-gray-500 mt-1">Este número es el identificador único del cliente.</p>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Boletos (Separados por coma)</label>
+                        <input type="text" id="form-tickets" class="w-full p-3 border rounded outline-none focus:border-blue-500" placeholder="ej. 007, 042, 099" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Estado de Pago</label>
+                        <select id="form-status" class="w-full p-3 border rounded outline-none focus:border-blue-500 bg-white">
+                            <option value="pending">PENDIENTE</option>
+                            <option value="paid">PAGADO</option>
+                            <option value="cancelled">CANCELADO</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end gap-3">
+                        <button type="button" onclick="closeModal()" class="px-5 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300 transition">Cancelar</button>
+                        <button type="submit" id="btn-save" class="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-bold">Guardar Registro</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://auqxarsyigimlcejixld.supabase.co';
+        const supabaseKey = 'sb_publishable_5LaGv8jrhP5lA2AngpAp7w_YZFX0aQB'; 
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const MAIN_ADMIN_UID = '847bfff5-4994-47d5-8540-62f5f6db4b10';
+
+        // --- SISTEMA DE AUTENTICACIÓN ---
+        async function login() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('login-error');
+            errorMsg.classList.add('hidden'); 
+
+            if(!email || !password) {
+                errorMsg.textContent = "Por favor ingresa usuario y contraseña.";
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const { error } = await _supabase.auth.signInWithPassword({ email, password });
+                if (error) {
+                    errorMsg.textContent = "Error: " + error.message;
+                    errorMsg.classList.remove('hidden');
+                } else {
+                    checkUser();
+                }
+            } catch (err) {
+                errorMsg.textContent = "Error del servidor: verifique su API Key.";
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        async function checkUser() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (user) {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                if (user.id === MAIN_ADMIN_UID) {
+                    document.getElementById('admin-uid').textContent = `UID: ${user.id} (Admin Principal)`;
+                } else {
+                    document.getElementById('admin-uid').textContent = `UID: ${user.id}`;
+                }
+                loadData();
+            }
+        }
+
+        async function logout() {
+            await _supabase.auth.signOut();
+            location.reload();
+        }
+
+        // --- SISTEMA CRUD DE BASE DE DATOS ---
+        let currentCustomers = [];
+        let isEditing = false;
+        let originalPhone = "";
+
+        async function loadData() {
+            const tbody = document.getElementById('data-table');
+            tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">Cargando base de datos...</td></tr>';
+
+            const { data, error } = await _supabase
+                .from('customers')
+                .select(`full_name, whatsapp_number, payment_status, tickets(ticket_number)`)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">Error al cargar: ${error.message}</td></tr>`;
+                return;
+            }
+
+            currentCustomers = data || [];
+
+            if (currentCustomers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No hay clientes registrados aún.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = currentCustomers.map(c => {
+                const ticketString = c.tickets && c.tickets.length > 0 ? c.tickets.map(t => t.ticket_number).join(', ') : '';
+                return `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="p-4 font-medium text-gray-800">${c.full_name}</td>
+                    <td class="p-4 text-gray-600">${c.whatsapp_number}</td>
+                    <td class="p-4 text-blue-600 font-bold">${ticketString || 'Ninguno'}</td>
+                    <td class="p-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold ${c.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+                            ${c.payment_status === 'paid' ? 'PAGADO' : 'PENDIENTE'}
+                        </span>
+                    </td>
+                    <td class="p-4 text-center">
+                        <button onclick="openModal(true, '${c.whatsapp_number}')" class="text-blue-500 hover:text-blue-700 mx-2" title="Editar">✏️</button>
+                        <button onclick="deleteRecord('${c.whatsapp_number}')" class="text-red-500 hover:text-red-700 mx-2" title="Eliminar">🗑️</button>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        // FUNCIONES DEL MODAL
+        function openModal(editMode = false, phone = '') {
+            isEditing = editMode;
+            document.getElementById('crud-modal').classList.remove('hidden');
+            
+            if (isEditing) {
+                document.getElementById('modal-title').textContent = "Editar Registro";
+                const customer = currentCustomers.find(c => c.whatsapp_number === phone);
+                if(customer) {
+                    originalPhone = customer.whatsapp_number;
+                    document.getElementById('form-name').value = customer.full_name;
+                    document.getElementById('form-phone').value = customer.whatsapp_number;
+                    document.getElementById('form-phone').readOnly = true; // Protegemos el ID original
+                    document.getElementById('form-status').value = customer.payment_status;
+                    document.getElementById('form-tickets').value = customer.tickets.map(t => t.ticket_number).join(', ');
+                }
+            } else {
+                document.getElementById('modal-title').textContent = "Añadir Nuevo Registro";
+                document.getElementById('form-name').value = '';
+                document.getElementById('form-phone').value = '';
+                document.getElementById('form-phone').readOnly = false;
+                document.getElementById('form-status').value = 'pending';
+                document.getElementById('form-tickets').value = '';
+                originalPhone = "";
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('crud-modal').classList.add('hidden');
+            document.getElementById('record-form').reset();
+        }
+
+        // GUARDAR O ACTUALIZAR
+        async function saveRecord() {
+            const btnSave = document.getElementById('btn-save');
+            btnSave.disabled = true;
+            btnSave.textContent = 'Guardando...';
+
+            const name = document.getElementById('form-name').value.trim();
+            const phone = document.getElementById('form-phone').value.trim();
+            const status = document.getElementById('form-status').value;
+            const ticketsRaw = document.getElementById('form-tickets').value;
+
+            // Procesar y limpiar el texto de boletos (quitar espacios y dejar solo números)
+            const ticketsArray = ticketsRaw.split(',').map(t => t.trim()).filter(t => t);
+
+            try {
+                // 1. Guardar/Actualizar Cliente
+                const { error: cErr } = await _supabase.from('customers').upsert([
+                    { full_name: name, whatsapp_number: phone, payment_status: status }
+                ], { onConflict: 'whatsapp_number' });
+
+                if (cErr) throw cErr;
+
+                // 2. Gestionar Boletos (Limpiamos los viejos y metemos los nuevos)
+                // Usamos doble intento por si la columna foránea es 'whatsapp' o 'whatsapp_number' en tu tabla
+                await _supabase.from('tickets').delete().eq('whatsapp_number', phone);
+                await _supabase.from('tickets').delete().eq('whatsapp', phone);
+
+                if (ticketsArray.length > 0) {
+                    const ticketInserts = ticketsArray.map(t => ({
+                        ticket_number: t,
+                        whatsapp_number: phone, // Nombre actualizado de la columna
+                        ticket_status: 'active'
+                    }));
+                    
+                    const { error: tErr } = await _supabase.from('tickets').insert(ticketInserts);
+                    
+                    if (tErr) {
+                        // Fallback por si la columna de unión original en Supabase se quedó con nombre 'whatsapp'
+                        const fallbackInserts = ticketsArray.map(t => ({
+                            ticket_number: t,
+                            whatsapp: phone,
+                            ticket_status: 'active'
+                        }));
+                        await _supabase.from('tickets').insert(fallbackInserts);
+                    }
+                }
+
+                closeModal();
+                loadData(); // Recargar tabla
+            } catch (err) {
+                alert("Error al guardar: " + err.message);
+            } finally {
+                btnSave.disabled = false;
+                btnSave.textContent = 'Guardar Registro';
+            }
+        }
+
+        // ELIMINAR CLIENTE
+        async function deleteRecord(phone) {
+            if (!confirm(`¿Estás seguro de que deseas eliminar al cliente con WhatsApp ${phone} y liberar todos sus boletos? Esta acción no se puede deshacer.`)) {
+                return;
+            }
+
+            try {
+                // Primero eliminamos los boletos asociados (si no hay borrado en cascada activado)
+                await _supabase.from('tickets').delete().eq('whatsapp_number', phone);
+                await _supabase.from('tickets').delete().eq('whatsapp', phone);
+                
+                // Luego eliminamos el cliente
+                const { error } = await _supabase.from('customers').delete().eq('whatsapp_number', phone);
+                if (error) throw error;
+                
+                loadData(); // Recargar tabla
+            } catch (err) {
+                alert("Error al eliminar: " + err.message);
+            }
+        }
+
+        checkUser();
+    </script>
+</body>
+</html>
