@@ -179,7 +179,7 @@
         } catch (e) { console.error("Error inicializando BD:", e); }
 
         const TICKET_PRICE = 50;           
-        const TOTAL_TICKETS = 100;         
+        const TOTAL_TICKETS = 1000; // ¡AUMENTADO A 1000 PARA QUE CARGUE DEL 000 AL 999!         
         const ADMIN_WHATSAPP = "525512345678"; 
         let selectedTickets = [];
 
@@ -223,29 +223,27 @@
             updateCartUI();
         }
 
-        // --- FUNCIÓN PARA PINTAR DE ROJO LOS BOLETOS VENDIDOS ---
+        // --- FUNCIÓN MEJORADA PARA PINTAR DE ROJO LOS BOLETOS VENDIDOS ---
         async function loadSoldTickets() {
             if (!supabaseClient) return;
             try {
-                // 1. Intentamos usar la función SQL segura que creaste
-                let { data, error } = await supabaseClient.rpc('get_sold_tickets');
+                // Obtenemos los números. Esto requiere que la Política RLS (Paso 1) esté activa.
+                let { data, error } = await supabaseClient.from('tickets').select('ticket_number');
                 
-                // 2. Si no has ejecutado el SQL aún, esto intentará leer directamente la tabla como respaldo
-                if (error) {
-                    const fallback = await supabaseClient.from('tickets').select('ticket_number');
-                    data = fallback.data;
-                    if(fallback.error) throw fallback.error;
+                // Si la política RLS falla, intentamos usar el RPC si el usuario lo creó.
+                if (error || !data) {
+                    const rpcResponse = await supabaseClient.rpc('get_sold_tickets');
+                    data = rpcResponse.data;
                 }
                 
                 if (data && data.length > 0) {
                     data.forEach(t => {
-                        // Buscamos el elemento visual en la grilla que corresponda al número
                         const ticketCard = document.querySelector(`.ticket-card[data-number="${t.ticket_number}"]`);
                         if (ticketCard) {
-                            ticketCard.classList.add('sold'); // Le ponemos la clase rojo
-                            ticketCard.classList.remove('selected'); // Lo deseleccionamos por si acaso
+                            ticketCard.classList.add('sold'); // Lo pinta de rojo
+                            ticketCard.classList.remove('selected'); 
                             
-                            // Si estaba en el carrito temporalmente, lo quitamos
+                            // Lo saca del carrito si estaba ahí temporalmente
                             const sIndex = selectedTickets.indexOf(t.ticket_number);
                             if(sIndex > -1) {
                                 selectedTickets.splice(sIndex, 1);
@@ -255,7 +253,7 @@
                     });
                 }
             } catch (err) {
-                console.error("No se pudieron cargar los boletos rojos por políticas de seguridad (RLS). Ejecuta la función SQL en Supabase.", err.message);
+                console.error("No se pudieron cargar los boletos vendidos. Revisa que el código SQL se haya ejecutado.", err.message);
             }
         }
 
