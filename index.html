@@ -83,6 +83,40 @@
 
     <main class="max-w-6xl mx-auto px-4 py-12">
         
+        <!-- PRODUCT GALLERY (iPhone 17 Pro Orange) -->
+        <section class="mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-6 md:p-10 rounded-3xl shadow-lg border border-gray-100">
+                <div class="space-y-4">
+                    <div class="relative overflow-hidden rounded-2xl shadow-inner bg-gray-50 border border-gray-200">
+                        <!-- Ajustada para vista completa con object-contain -->
+                        <img id="main-product-img" src="https://m.media-amazon.com/images/I/51E+vNtCsCL._AC_SX342_SY445_QL70_ML2_.jpg" alt="iPhone 17 Pro Orange" class="w-full object-contain p-4 transition duration-500 hover:scale-105 aspect-[4/3]">
+                        <div class="absolute top-4 left-4 bg-orange-500 text-white px-4 py-1 rounded-full font-bold text-xs uppercase tracking-widest shadow-lg">Edición Especial</div>
+                    </div>
+                    <div id="thumb-grid" class="flex justify-center gap-4">
+                        <img src="https://m.media-amazon.com/images/I/51E+vNtCsCL._AC_SX342_SY445_QL70_ML2_.jpg" onclick="changeImg(this)" class="thumb-btn cursor-pointer rounded-lg border-2 border-orange-500 hover:opacity-80 transition w-20 h-20 object-contain p-1 bg-gray-50">
+                        <!-- Se eliminaron las imágenes de celulares negros genéricos -->
+                    </div>
+                </div>
+                <div>
+                    <div class="inline-block bg-orange-100 text-orange-600 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-widest mb-3 italic">🔥 ¡Premios Increíbles!</div>
+                    <h2 class="text-4xl md:text-5xl font-bebas text-gray-800 mb-4 tracking-wide leading-tight">iPhone 17 Pro <span class="text-orange-500">Titanio Naranja</span></h2>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Sé uno de los primeros en tener el iPhone más avanzado. Con un diseño de titanio aeroespacial y el color más exclusivo de la temporada.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center gap-3 text-sm text-gray-700 font-medium">
+                            <span class="w-6 h-6 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs">✓</span> Pantalla Super Retina XDR Pro
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-700 font-medium">
+                            <span class="w-6 h-6 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs">✓</span> Sistema de cámara Pro Max
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-gray-700 font-medium">
+                            <span class="w-6 h-6 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs">✓</span> Chip A19 Bionic (Última Gen)
+                        </li>
+                    </ul>
+                    <a href="#tickets-grid" class="inline-block w-full bg-gray-800 text-white text-center py-4 rounded-xl font-bold hover:bg-black transition-all shadow-lg transform hover:-translate-y-1">Elegir mis boletos</a>
+                </div>
+            </div>
+        </section>
+
         <!-- SECCIÓN CÓMO PARTICIPAR -->
         <section class="mb-16">
             <h2 class="text-3xl font-bebas text-center text-gray-800 mb-8">¿Cómo participar?</h2>
@@ -179,9 +213,17 @@
         } catch (e) { console.error("Error inicializando BD:", e); }
 
         const TICKET_PRICE = 50;           
-        const TOTAL_TICKETS = 1000; // ¡AUMENTADO A 1000 PARA QUE CARGUE DEL 000 AL 999!         
+        const TOTAL_TICKETS = 100; 
+
         const ADMIN_WHATSAPP = "525512345678"; 
         let selectedTickets = [];
+
+        // FUNCIÓN PARA GALERÍA
+        function changeImg(el) {
+            document.getElementById('main-product-img').src = el.src;
+            document.querySelectorAll('.thumb-btn').forEach(img => img.classList.replace('border-orange-500', 'border-transparent'));
+            el.classList.replace('border-transparent', 'border-orange-500');
+        }
 
         function initializeGrid() {
             const gridContainer = document.getElementById('tickets-grid');
@@ -199,9 +241,8 @@
         }
 
         function handleTicketSelection(num, element) {
-            // EVITAR SELECCIONAR BOLETOS VENDIDOS
             if (element.classList.contains('sold')) {
-                return; // Bloquea la acción si es rojo
+                return; 
             }
 
             const index = selectedTickets.indexOf(num);
@@ -211,7 +252,6 @@
             } else {
                 selectedTickets.push(num);
                 element.classList.add('selected');
-                // Efecto Haptico visual
                 if(element.animate) {
                     element.animate([
                         { transform: 'scale(1.05) rotate(-2deg)' },
@@ -223,14 +263,10 @@
             updateCartUI();
         }
 
-        // --- FUNCIÓN MEJORADA PARA PINTAR DE ROJO LOS BOLETOS VENDIDOS ---
         async function loadSoldTickets() {
             if (!supabaseClient) return;
             try {
-                // Obtenemos los números. Esto requiere que la Política RLS (Paso 1) esté activa.
                 let { data, error } = await supabaseClient.from('tickets').select('ticket_number');
-                
-                // Si la política RLS falla, intentamos usar el RPC si el usuario lo creó.
                 if (error || !data) {
                     const rpcResponse = await supabaseClient.rpc('get_sold_tickets');
                     data = rpcResponse.data;
@@ -240,10 +276,8 @@
                     data.forEach(t => {
                         const ticketCard = document.querySelector(`.ticket-card[data-number="${t.ticket_number}"]`);
                         if (ticketCard) {
-                            ticketCard.classList.add('sold'); // Lo pinta de rojo
+                            ticketCard.classList.add('sold'); 
                             ticketCard.classList.remove('selected'); 
-                            
-                            // Lo saca del carrito si estaba ahí temporalmente
                             const sIndex = selectedTickets.indexOf(t.ticket_number);
                             if(sIndex > -1) {
                                 selectedTickets.splice(sIndex, 1);
@@ -253,7 +287,7 @@
                     });
                 }
             } catch (err) {
-                console.error("No se pudieron cargar los boletos vendidos. Revisa que el código SQL se haya ejecutado.", err.message);
+                console.error("Error cargando rojos:", err.message);
             }
         }
 
@@ -349,9 +383,8 @@
             }, 1000);
         }
 
-        // INICIAR TODO
         initializeGrid();
-        loadSoldTickets(); // Llama a Supabase para marcar los rojos
+        loadSoldTickets(); 
         initCountdown();
     </script>
 </body>
