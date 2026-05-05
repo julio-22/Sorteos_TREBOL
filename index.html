@@ -139,13 +139,97 @@
 </head>
 <body>
 
+    <!-- ========================================== -->
+    <!-- IPHONE 17 PRO MAX BANNER - NARANJA TITANIO -->
+    <!-- ========================================== -->
+    <style>
+        .iphone-banner {
+            background: linear-gradient(135deg, #020617 0%, #172554 100%);
+            padding: 5rem 1rem 4rem 1rem;
+            text-align: center;
+            border-bottom: 2px solid rgba(249, 115, 22, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+        .iphone-banner::before {
+            content: '';
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, rgba(0,0,0,0) 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .iphone-img-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .iphone-img {
+            height: 380px;
+            width: auto;
+            object-fit: contain;
+            animation: float-iphone 5s ease-in-out infinite;
+        }
+        .iphone-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #ffedd5, #f97316, #ea580c, #fbbf24);
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-top: 2rem;
+            line-height: 1;
+            text-shadow: 0 10px 20px rgba(249, 115, 22, 0.4);
+            animation: pulse-glow 3s infinite alternate;
+        }
+        .iphone-subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            color: #fdba74;
+            font-size: 1.1rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+        @keyframes float-iphone {
+            0%, 100% { 
+                transform: translateY(0px) scale(1); 
+                filter: drop-shadow(0 15px 25px rgba(249, 115, 22, 0.4)) brightness(1.1); 
+            }
+            50% { 
+                transform: translateY(-20px) scale(1.05); 
+                filter: drop-shadow(0 35px 50px rgba(249, 115, 22, 0.8)) brightness(1.25); 
+            }
+        }
+        @keyframes pulse-glow {
+            from { text-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
+            to { text-shadow: 0 4px 25px rgba(251, 146, 60, 0.8); }
+        }
+    </style>
+    <div class="iphone-banner">
+        <div class="iphone-img-container">
+            <img src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-compare-iphone-17-pro-202509_FMT_WHH?wid=248&hei=324&fmt=png-alpha" alt="iPhone 17 Pro Max Naranja Cósmico Titanio" class="iphone-img">
+            <h2 class="iphone-title">¡Gánate este iPhone 17 Pro Max!</h2>
+            <p class="iphone-subtitle">Naranja Cósmico (Titanio)</p>
+        </div>
+    </div>
+    <!-- ========================================== -->
+
     <!-- Navegación Premium -->
     <nav class="glass-nav sticky top-0 z-[100] border-b border-gray-100 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="flex items-center gap-4 group">
                 <div class="relative">
                     <div class="absolute -inset-1 bg-green-500 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
-                    <img src="https://drive.google.com/thumbnail?id=1m84kQQMjhTzNmTrFJZf2eCTObtXI5UXq&sz=w500" alt="Logo" class="relative w-12 h-12 md:w-14 md:h-14 object-contain bg-white rounded-xl p-1 shadow-sm">
+                    <!-- ACTUALIZADO: Logo de la barra de navegación -->
+                    <img src="https://drive.google.com/thumbnail?id=10iQ1Yhi1_3o7EOn1d1913JUjoOKyRhAa&sz=w500" alt="Logo" class="relative w-12 h-12 md:w-14 md:h-14 object-contain bg-white rounded-xl p-1 shadow-sm">
                 </div>
                 <div class="flex flex-col">
                     <span class="font-bebas text-3xl md:text-4xl text-green-950 leading-none tracking-tighter">TRÉBOL 777</span>
@@ -403,7 +487,8 @@
             <div class="grid md:grid-cols-12 gap-20 items-start mb-24">
                 <div class="md:col-span-5">
                     <div class="flex items-center gap-4 mb-8">
-                        <img src="https://drive.google.com/thumbnail?id=1m84kQQMjhTzNmTrFJZf2eCTObtXI5UXq&sz=w500" alt="Logo" class="w-16 h-16 object-contain bg-white rounded-2xl p-1 shadow-sm">
+                        <!-- ACTUALIZADO: Logo en el pie de página -->
+                        <img src="https://drive.google.com/thumbnail?id=10iQ1Yhi1_3o7EOn1d1913JUjoOKyRhAa&sz=w500" alt="Logo" class="w-16 h-16 object-contain bg-white rounded-2xl p-1 shadow-sm">
                         <h5 class="font-bebas text-5xl text-white tracking-wide">SORTEOS TRÉBOL 777</h5>
                     </div>
                     <p class="text-lg leading-relaxed max-w-md mb-12">Impulsando sueños y creando ganadores a través de la plataforma de sorteos más innovadora y segura de la región.</p>
