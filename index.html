@@ -1,14 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- ========================================== -->
+    <!-- METADATOS Y CONFIGURACIÓN INICIAL          -->
+    <!-- ========================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Participa en los Sorteos TRÉBOL 777 y gana increíbles premios como el iPhone 17 Pro Max. Sorteos basados en la Lotería Nacional.">
+    <meta name="keywords" content="sorteos, trebol 777, ganar iphone, loteria nacional, sorteos mexico, premios">
+    <meta name="author" content="Trébol 777">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph para Redes Sociales -->
+    <meta property="og:title" content="Sorteos TRÉBOL 777 — Cambia tu destino">
+    <meta property="og:description" content="Participa en la plataforma de sorteos más transparente de México. Tu número de la suerte te está esperando.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://julio-22.github.io/Sorteos_TREBOL/">
+    <meta property="og:image" content="https://lh3.googleusercontent.com/d/10iQ1Yhi1_3o7EOn1d1913JUjoOKyRhAa">
+    
     <title>Sorteos TRÉBOL 777 — Gana con nosotros</title>
     
-    <!-- Frameworks y Librerías Externas -->
+    <!-- ========================================== -->
+    <!-- FRAMEWORKS Y LIBRERÍAS EXTERNAS            -->
+    <!-- ========================================== -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Configuración para cambiar el verde default al color solicitado #00E65A -->
+    <!-- Configuración avanzada de Tailwind CSS -->
     <script>
         tailwind.config = {
             theme: {
@@ -33,22 +50,33 @@
         }
     </script>
 
+    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Estilos de Diseño de Alta Gama -->
+    <!-- ========================================== -->
+    <!-- ESTILOS DE DISEÑO Y ANIMACIONES (CSS)      -->
+    <!-- ========================================== -->
     <style>
+        /* Variables Globales */
         :root {
             --trebol-green: #00E65A;
             --trebol-dark: #005220;
             --trebol-gold: #fbbf24;
             --trebol-bg: #f8fafc;
             --glass: rgba(255, 255, 255, 0.8);
+            --transition-smooth: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
-        * { box-sizing: border-box; }
+        /* Reset y Estilos Base */
+        * { 
+            box-sizing: border-box; 
+        }
+        
         body { 
             font-family: 'Poppins', sans-serif; 
             background-color: var(--trebol-bg); 
@@ -56,11 +84,16 @@
             padding: 0; 
             overflow-x: hidden;
             scroll-behavior: smooth; 
+            color: #334155;
         }
         
-        .font-bebas { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; }
+        /* Tipografías Especiales */
+        .font-bebas { 
+            font-family: 'Bebas Neue', sans-serif; 
+            letter-spacing: 0.05em; 
+        }
         
-        /* Efectos de Fondos */
+        /* Efectos de Fondos Complejos */
         .hero-bg { 
             background: radial-gradient(circle at top right, #007a30, #005220, #002910);
             position: relative; 
@@ -73,11 +106,12 @@
             top: 0; left: 0; right: 0; bottom: 0;
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             pointer-events: none;
+            z-index: 0;
         }
 
-        /* Tarjetas de Boletos */
+        /* Tarjetas de Boletos - Grilla Principal */
         .ticket-card { 
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            transition: var(--transition-smooth); 
             cursor: pointer; 
             aspect-ratio: 1/1; 
             display: flex; 
@@ -91,6 +125,7 @@
             font-size: 1.5rem; 
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
             position: relative;
+            user-select: none;
         }
         
         .ticket-card:hover:not(.sold) { 
@@ -100,6 +135,7 @@
             z-index: 10;
         }
         
+        /* Estado: Boleto Seleccionado */
         .ticket-card.selected { 
             background: var(--trebol-green) !important; 
             color: #002910 !important; 
@@ -113,6 +149,7 @@
             100% { box-shadow: 0 0 0 0 rgba(0, 230, 90, 0); }
         }
         
+        /* Estado: Boleto Vendido / No disponible */
         .ticket-card.sold { 
             background-color: #f1f5f9 !important; 
             color: #94a3b8 !important; 
@@ -125,22 +162,52 @@
         .ticket-card.sold::after {
             content: "VENDIDO";
             position: absolute;
-            font-size: 0.5rem;
+            font-size: 0.55rem;
             bottom: 4px;
-            font-family: 'Poppins';
+            font-family: 'Poppins', sans-serif;
             color: #ef4444;
             font-weight: 900;
+            letter-spacing: 0.05em;
         }
         
-        /* Loaders */
-        .loader { border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
-        .loader-dark { border: 4px solid #f1f5f9; border-top: 4px solid var(--trebol-green); border-radius: 50%; width: 48px; height: 48px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Componentes de Carga (Spinners) */
+        .loader { 
+            border: 3px solid rgba(255,255,255,0.3); 
+            border-top: 3px solid white; 
+            border-radius: 50%; 
+            width: 24px; 
+            height: 24px; 
+            animation: spin 1s linear infinite; 
+            display: inline-block; 
+        }
         
-        /* Animaciones */
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        .loader-dark { 
+            border: 4px solid #f1f5f9; 
+            border-top: 4px solid var(--trebol-green); 
+            border-radius: 50%; 
+            width: 48px; 
+            height: 48px; 
+            animation: spin 1s linear infinite; 
+        }
+        
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+        
+        /* Sistema de Animaciones de Aparición (Scroll Reveal) */
+        .reveal { 
+            opacity: 0; 
+            transform: translateY(30px); 
+            transition: all 0.8s ease-out; 
+            will-change: opacity, transform;
+        }
+        .reveal.active { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
 
+        /* Tarjetas de Beneficios */
         .benefit-card { 
             background: white; 
             padding: 3rem; 
@@ -148,30 +215,41 @@
             transition: all 0.4s ease; 
             border: 1px solid #f1f5f9;
         }
-        .benefit-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px -12px rgba(0,0,0,0.1); }
+        
+        .benefit-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.1); 
+            border-color: #e2e8f0;
+        }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: var(--trebol-green); border-radius: 10px; }
+        /* Personalización de Scrollbar */
+        ::-webkit-scrollbar { 
+            width: 8px; 
+        }
+        ::-webkit-scrollbar-track { 
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--trebol-green); 
+            border-radius: 10px; 
+        }
+        ::-webkit-scrollbar-thumb:hover { 
+            background: var(--trebol-dark); 
+        }
 
-        /* Glassmorphism */
+        /* Efecto Glassmorphism para Navegación */
         .glass-nav {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
 
-        /* Ocultar scroll en modales */
-        .no-scroll { overflow: hidden; }
-    </style>
-</head>
-<body>
+        /* Utilidad para evitar scroll al abrir modales */
+        .no-scroll { 
+            overflow: hidden; 
+        }
 
-    <!-- ========================================== -->
-    <!-- IPHONE 17 PRO MAX BANNER - NARANJA TITANIO -->
-    <!-- ========================================== -->
-    <style>
+        /* Diseño Personalizado del Banner del iPhone */
         .iphone-banner {
             background: linear-gradient(135deg, #020617 0%, #172554 100%);
             padding: 5rem 1rem 4rem 1rem;
@@ -241,20 +319,36 @@
             from { text-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
             to { text-shadow: 0 4px 25px rgba(251, 146, 60, 0.8); }
         }
+
+        /* Clases auxiliares para la Galería de Ganadores */
+        .winner-card {
+            transition: all 0.3s ease;
+        }
+        .winner-card:hover {
+            transform: translateY(-5px);
+        }
     </style>
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- BANNER PROMOCIONAL: IPHONE 17 PRO MAX      -->
+    <!-- ========================================== -->
     <div class="iphone-banner">
         <div class="iphone-img-container">
             <img src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-compare-iphone-17-pro-202509_FMT_WHH?wid=248&hei=324&fmt=png-alpha" alt="iPhone 17 Pro Max Naranja Cósmico Titanio" class="iphone-img">
             <h2 class="iphone-title">¡Gánate este iPhone 17 Pro Max!</h2>
             <p class="iphone-subtitle">Naranja Cósmico (Titanio)</p>
 
-            <!-- NUEVOS PREMIOS: 2do y 3er Lugar -->
+            <!-- PREMIOS SECUNDARIOS: 2do y 3er Lugar -->
             <div class="mt-10 flex flex-col md:flex-row gap-6 justify-center items-center z-10 w-full max-w-3xl px-4">
-                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 text-center flex-1 w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+                <!-- Premio 2do Lugar -->
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 text-center flex-1 w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-white/15 transition-all">
                     <span class="block text-yellow-400 font-bold text-sm uppercase tracking-[0.2em] mb-2">2do Lugar</span>
                     <span class="block text-white font-bebas text-5xl tracking-wide">$5,000 MXN</span>
                 </div>
-                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 text-center flex-1 w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+                <!-- Premio 3er Lugar -->
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 text-center flex-1 w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-white/15 transition-all">
                     <span class="block text-yellow-400 font-bold text-sm uppercase tracking-[0.2em] mb-2">3er Lugar</span>
                     <span class="block text-white font-bebas text-3xl md:text-4xl tracking-wide">2 Boletos de Cortesía</span>
                     <span class="block text-white/70 text-xs mt-2 uppercase tracking-widest">Para el siguiente sorteo</span>
@@ -262,41 +356,55 @@
             </div>
         </div>
     </div>
-    <!-- ========================================== -->
 
-    <!-- Navegación Premium -->
+    <!-- ========================================== -->
+    <!-- NAVEGACIÓN PRINCIPAL (TOP BAR)             -->
+    <!-- ========================================== -->
     <nav class="glass-nav sticky top-0 z-[100] border-b border-gray-100 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <!-- Logo y Título -->
             <a href="#" class="flex items-center gap-4 group">
                 <div class="relative">
                     <div class="absolute -inset-1 bg-green-500 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
-                    <img src="https://lh3.googleusercontent.com/d/10iQ1Yhi1_3o7EOn1d1913JUjoOKyRhAa" alt="Logo" class="relative w-12 h-12 md:w-14 md:h-14 object-contain bg-white rounded-xl p-1 shadow-sm">
+                    <!-- LOGO CORREGIDO: Enlace directo de Google Drive -->
+                    <img src="https://lh3.googleusercontent.com/d/10iQ1Yhi1_3o7EOn1d1913JUjoOKyRhAa" alt="Logo Trébol 777" class="relative w-12 h-12 md:w-14 md:h-14 object-contain bg-white rounded-xl p-1 shadow-sm">
                 </div>
                 <div class="flex flex-col">
                     <span class="font-bebas text-3xl md:text-4xl text-[#fbbf24] drop-shadow-sm leading-none tracking-tighter">TRÉBOL 777</span>
                     <span class="text-[10px] font-bold text-green-600 uppercase tracking-[0.3em]">Sorteos de Lujo</span>
                 </div>
             </a>
+            
+            <!-- Menú de Escritorio -->
             <div class="hidden lg:flex items-center gap-12 text-sm font-bold text-slate-500 uppercase tracking-widest">
                 <a href="#proceso" class="hover:text-green-600 transition-colors">Proceso</a>
                 <a href="#boletos" class="hover:text-green-600 transition-colors">Boletos</a>
                 <a href="#verificar" class="hover:text-green-600 transition-colors">Verificar</a>
+                <a href="#ganadores" class="hover:text-green-600 transition-colors">Ganadores</a>
                 <a href="#preguntas" class="hover:text-green-600 transition-colors">Ayuda</a>
             </div>
+            
+            <!-- Botón CTA de Compra -->
             <div class="flex items-center gap-4">
                 <a href="#boletos" class="hidden sm:block bg-green-500 hover:bg-green-600 text-slate-900 px-8 py-4 rounded-2xl text-xs font-black shadow-xl shadow-green-200 transition-all active:scale-95 uppercase tracking-widest">
                     Comprar ahora
                 </a>
-                <button class="lg:hidden text-slate-900">
+                <!-- Botón Menú Hamburguesa (Móvil) -->
+                <button class="lg:hidden text-slate-900" aria-label="Abrir Menú">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero / Header Section -->
+    <!-- ========================================== -->
+    <!-- HEADER / HERO SECTION                      -->
+    <!-- ========================================== -->
     <header class="hero-bg text-white pt-24 pb-40 px-6 text-center relative">
         <div class="max-w-5xl mx-auto relative z-10">
+            
+            <!-- Badge Sorteo Activo -->
             <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md px-6 py-2 rounded-full mb-10 border border-white/20 reveal active">
                 <span class="relative flex h-3 w-3">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -305,14 +413,17 @@
                 <span class="text-xs font-black uppercase tracking-[0.2em]">Sorteo Activo • Gran Premio en Juego</span>
             </div>
             
+            <!-- Título Principal -->
             <h1 class="text-7xl md:text-[11rem] font-bebas leading-[0.85] mb-8 reveal active" style="transition-delay: 200ms;">
                 CAMBIA TU <br> <span class="text-yellow-400 drop-shadow-[0_10px_30px_rgba(250,204,21,0.4)]">DESTINO</span>
             </h1>
             
+            <!-- Subtítulo -->
             <p class="text-xl md:text-3xl font-light text-green-50/90 mb-10 max-w-3xl mx-auto leading-relaxed reveal active" style="transition-delay: 400ms;">
                 Participa en la plataforma de sorteos más transparente de México. Tu número de la suerte te está esperando.
             </p>
 
+            <!-- Garantía de Lotería Nacional -->
             <div class="flex items-center justify-center gap-3 mb-16 reveal active" style="transition-delay: 500ms;">
                 <div class="bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/20 flex items-center gap-3 shadow-lg">
                     <svg class="w-7 h-7 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
@@ -320,6 +431,7 @@
                 </div>
             </div>
 
+            <!-- Contador de Tiempo Restante (Countdown) -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto reveal active" style="transition-delay: 600ms;">
                 <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-[2.5rem]">
                     <span id="cd-days" class="block text-6xl font-bebas text-white mb-1">00</span>
@@ -340,6 +452,7 @@
             </div>
         </div>
 
+        <!-- Curva Decorativa Inferior (Wave) -->
         <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-[0]">
             <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-[calc(100%+1.3px)] h-[100px] fill-[#f8fafc]">
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
@@ -347,56 +460,67 @@
         </div>
     </header>
 
+    <!-- ========================================== -->
+    <!-- SECCIÓN: CÓMO FUNCIONA / PROCESO           -->
+    <!-- ========================================== -->
     <section id="proceso" class="py-32 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-24 reveal">
                 <span class="text-green-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block">Pasos para Ganar</span>
                 <h2 class="text-5xl md:text-7xl font-bebas text-slate-900 uppercase">¿Cómo funciona?</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto mt-4 text-lg">Participar es muy sencillo y seguro. Sigue estos tres pasos y asegúrate tu lugar en nuestro próximo gran sorteo.</p>
             </div>
             
             <div class="grid md:grid-cols-3 gap-12">
+                <!-- Paso 1 -->
                 <div class="benefit-card reveal" style="transition-delay: 100ms;">
                     <div class="w-20 h-20 bg-green-50 text-green-600 rounded-3xl flex items-center justify-center mb-8 shadow-inner">
                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
                     </div>
                     <h3 class="text-2xl font-bold text-slate-800 mb-4">1. Elige tu número</h3>
-                    <p class="text-slate-500 leading-relaxed">Navega por nuestra rejilla digital y selecciona los números que dicten tu intuición. Puedes elegir cuantos quieras.</p>
+                    <p class="text-slate-500 leading-relaxed">Navega por nuestra rejilla digital y selecciona los números que dicten tu intuición. Puedes elegir cuantos quieras. Recuerda que a más boletos, más oportunidades.</p>
                 </div>
                 
+                <!-- Paso 2 -->
                 <div class="benefit-card reveal" style="transition-delay: 200ms;">
                     <div class="w-20 h-20 bg-yellow-50 text-yellow-600 rounded-3xl flex items-center justify-center mb-8 shadow-inner">
                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                     </div>
                     <h3 class="text-2xl font-bold text-slate-800 mb-4">2. Realiza tu pago</h3>
-                    <p class="text-slate-500 leading-relaxed">Completa tu reserva y envía tu comprobante vía WhatsApp. Aceptamos transferencias y depósitos bancarios.</p>
+                    <p class="text-slate-500 leading-relaxed">Completa tu reserva rellenando tus datos y envía tu comprobante vía WhatsApp al administrador. Aceptamos transferencias y depósitos bancarios de manera segura.</p>
                 </div>
                 
+                <!-- Paso 3 -->
                 <div class="benefit-card reveal" style="transition-delay: 300ms;">
                     <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mb-8 shadow-inner">
                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                     <h3 class="text-2xl font-bold text-slate-800 mb-4">3. ¡Eres Participante!</h3>
-                    <p class="text-slate-500 leading-relaxed">Una vez validado tu pago, tu nombre aparecerá en la lista oficial. Solo queda esperar el día del sorteo nacional.</p>
+                    <p class="text-slate-500 leading-relaxed">Una vez validado tu pago, tu nombre aparecerá oficialmente en la base de datos verificable. Solo queda esperar el día del sorteo junto con la Lotería Nacional.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Buscador de Participantes -->
+    <!-- ========================================== -->
+    <!-- SECCIÓN: VERIFICACIÓN DE BOLETOS           -->
+    <!-- ========================================== -->
     <section id="verificar" class="py-32 bg-slate-900 text-white relative overflow-hidden">
+        <!-- Elemento de Diseño Fondo -->
         <div class="absolute top-0 right-0 w-1/2 h-full bg-green-600/5 -skew-x-12 translate-x-1/4 pointer-events-none"></div>
 
         <div class="max-w-4xl mx-auto px-6 relative z-10">
             <div class="text-center mb-16 reveal">
-                <span class="text-yellow-400 font-black text-xs uppercase tracking-[0.4em] mb-4 block">Verificación de Boletos</span>
+                <span class="text-yellow-400 font-black text-xs uppercase tracking-[0.4em] mb-4 block">Transparencia Total</span>
                 <h2 class="text-5xl md:text-7xl font-bebas mb-6">Busca tu Registro</h2>
-                <p class="text-slate-400 text-lg">Ingresa tu número de WhatsApp para confirmar que tus boletos estén registrados correctamente.</p>
+                <p class="text-slate-400 text-lg">Ingresa tu número de WhatsApp para confirmar que tus boletos estén registrados correctamente en nuestra base de datos. La honestidad es nuestro principal valor.</p>
             </div>
 
+            <!-- Formulario de Búsqueda -->
             <div class="bg-white/5 border border-white/10 p-10 md:p-16 rounded-[4rem] backdrop-blur-2xl reveal">
                 <div class="flex flex-col gap-8">
                     <div class="relative group">
-                        <label class="absolute -top-3 left-8 bg-slate-900 px-3 text-[10px] font-black text-slate-500 uppercase tracking-widest z-20">Teléfono de Registro</label>
+                        <label class="absolute -top-3 left-8 bg-slate-900 px-3 text-[10px] font-black text-slate-500 uppercase tracking-widest z-20">Teléfono Registrado</label>
                         <input type="tel" id="verify-phone" placeholder="Ej: 477 587 4578" class="w-full bg-transparent border-4 border-slate-800 group-hover:border-green-500/50 focus:border-green-500 p-8 rounded-[2rem] outline-none text-center text-4xl font-bold transition-all placeholder:text-slate-700">
                     </div>
                     <button id="btn-verify" onclick="verifyTicketsDB()" class="bg-green-500 hover:bg-green-400 text-slate-900 font-black py-8 rounded-[2rem] text-2xl shadow-2xl shadow-green-900/40 transition-all active:scale-95 flex items-center justify-center gap-4 group">
@@ -405,64 +529,71 @@
                     </button>
                 </div>
 
+                <!-- Contenedor Dinámico de Resultados -->
                 <div id="verification-results" class="mt-16 hidden">
-                    <!-- Dinámico -->
+                    <!-- Los resultados se inyectan aquí por JavaScript -->
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Selección de Boletos (NUEVO FLUJO ASÍNCRONO) -->
-    <section id="boletos" class="py-32 px-6">
+    <!-- ========================================== -->
+    <!-- SECCIÓN: SELECCIÓN DE BOLETOS (GRILLA)     -->
+    <!-- ========================================== -->
+    <section id="boletos" class="py-32 px-6 bg-white">
         <div class="max-w-[1400px] mx-auto">
+            
+            <!-- Encabezado Boletos -->
             <div class="flex flex-col lg:flex-row justify-between items-end gap-10 mb-20 reveal">
                 <div class="max-w-2xl">
                     <span class="text-green-600 font-black text-xs uppercase tracking-[0.4em] mb-4 block">Disponibilidad en Tiempo Real</span>
                     <h2 class="text-6xl md:text-8xl font-bebas text-slate-900 uppercase leading-none">Elige tu Trébol</h2>
-                    <p class="text-slate-500 text-xl mt-6 leading-relaxed">Cada boleto tiene un costo de <span class="font-black text-slate-900">$200 MXN</span>. Entre más boletos adquieras, ¡más oportunidades tienes de ganar!</p>
+                    <p class="text-slate-500 text-xl mt-6 leading-relaxed">Cada boleto tiene un costo de <span class="font-black text-slate-900 bg-green-100 px-2 py-1 rounded-md">$200 MXN</span>. Entre más boletos adquieras, ¡más oportunidades tienes de llevarte el premio mayor!</p>
                 </div>
                 
+                <!-- Buscador rápido en grilla -->
                 <div class="w-full lg:w-96">
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-6 flex items-center pointer-events-none">
                             <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
-                        <input type="text" id="search-ticket-grid" placeholder="Buscar número..." class="w-full bg-white border-2 border-slate-100 p-6 pl-16 rounded-3xl outline-none focus:border-green-500 focus:shadow-xl transition-all font-bold text-slate-700">
+                        <input type="text" id="search-ticket-grid" placeholder="Buscar un número específico..." class="w-full bg-slate-50 border-2 border-slate-100 p-6 pl-16 rounded-3xl outline-none focus:border-green-500 focus:shadow-xl transition-all font-bold text-slate-700 focus:bg-white">
                     </div>
                 </div>
             </div>
 
-            <!-- Estructura Split-Screen para Desktop / Grid Completo en Móvil -->
+            <!-- Estructura principal: Grilla (Izquierda) / Checkout (Derecha) -->
             <div class="flex flex-col lg:flex-row gap-8 items-start relative">
                 
-                <!-- Columna Izquierda: Grilla -->
+                <!-- Columna Izquierda: Grilla de Boletos -->
                 <div class="flex-1 w-full">
-                    <!-- Leyenda -->
-                    <div class="flex flex-wrap gap-8 mb-12 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 reveal">
-                        <div class="flex items-center gap-3"><div class="w-6 h-6 bg-white border-2 border-slate-200 rounded-lg"></div>Disponible</div>
-                        <div class="flex items-center gap-3"><div class="w-6 h-6 bg-green-500 rounded-lg"></div>Tu Selección</div>
-                        <div class="flex items-center gap-3"><div class="w-6 h-6 bg-slate-200 rounded-lg"></div>Vendido</div>
+                    
+                    <!-- Leyenda de colores -->
+                    <div class="flex flex-wrap gap-8 mb-12 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 reveal bg-slate-50 p-4 rounded-2xl inline-flex border border-slate-100">
+                        <div class="flex items-center gap-3"><div class="w-6 h-6 bg-white border-2 border-slate-200 rounded-lg shadow-sm"></div>Disponible</div>
+                        <div class="flex items-center gap-3"><div class="w-6 h-6 bg-green-500 border border-green-600 rounded-lg shadow-sm"></div>Tu Selección</div>
+                        <div class="flex items-center gap-3"><div class="w-6 h-6 bg-slate-200 border border-slate-300 rounded-lg shadow-inner"></div>Vendido</div>
                     </div>
 
-                    <!-- Grilla Principal -->
+                    <!-- Grilla inyectada dinámicamente -->
                     <div id="tickets-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4 reveal pb-24 lg:pb-0">
-                        <!-- Inyectado por JS -->
+                        <!-- Las tarjetas <div class="ticket-card"> se generan mediante JS -->
                     </div>
                 </div>
 
                 <!-- Columna Derecha: Sidebar Persistente (SOLO DESKTOP) -->
                 <div class="hidden lg:block w-[400px] shrink-0 sticky top-32 z-40 transition-all duration-300" id="desktop-sidebar">
                     
-                    <!-- Estado: Carrito Vacío -->
-                    <div id="desktop-empty-cart" class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2.5rem] p-12 text-center transition-all duration-300">
+                    <!-- Estado 1: Carrito Vacío -->
+                    <div id="desktop-empty-cart" class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2.5rem] p-12 text-center transition-all duration-300 hover:border-green-300">
                         <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-slate-100">
                             <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                         </div>
                         <h3 class="font-bold text-slate-700 mb-2">Carrito Vacío</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">Selecciona los números en la grilla para armar tu carrito.</p>
+                        <p class="text-sm text-slate-400 leading-relaxed">Selecciona uno o más números disponibles en la grilla izquierda para armar tu carrito.</p>
                     </div>
 
-                    <!-- Estado: Carrito Activo (Formulario de Checkout Desktop) -->
+                    <!-- Estado 2: Carrito Activo (Formulario de Checkout Desktop) -->
                     <div id="desktop-active-cart" class="hidden bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-slate-100 p-8 flex-col gap-8 transition-all duration-300">
                         <div>
                             <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] block mb-2">Resumen de Compra</span>
@@ -470,7 +601,7 @@
                         </div>
                         
                         <!-- Lista de Etiquetas Dinámica -->
-                        <div id="desktop-selected-tags" class="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-1 custom-scrollbar">
+                        <div id="desktop-selected-tags" class="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-1 custom-scrollbar">
                             <!-- Inyectado por JS -->
                         </div>
 
@@ -479,12 +610,12 @@
                             <span id="desktop-total" class="font-bebas text-4xl text-green-500">$0</span>
                         </div>
 
-                        <!-- Formulario Desktop -->
+                        <!-- Formulario de Datos Desktop -->
                         <div class="space-y-4">
-                            <input type="text" id="buyer-name-desktop" placeholder="Tu Nombre Completo" class="w-full bg-slate-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-green-500 focus:bg-white text-sm font-bold transition-all">
-                            <input type="tel" id="buyer-phone-desktop" placeholder="WhatsApp (10 Dígitos)" class="w-full bg-slate-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-green-500 focus:bg-white text-sm font-bold transition-all">
+                            <input type="text" id="buyer-name-desktop" placeholder="Tu Nombre Completo" class="w-full bg-slate-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-green-500 focus:bg-white text-sm font-bold transition-all shadow-inner">
+                            <input type="tel" id="buyer-phone-desktop" placeholder="WhatsApp (10 Dígitos)" class="w-full bg-slate-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-green-500 focus:bg-white text-sm font-bold transition-all shadow-inner">
                             
-                            <!-- Selección de Pago Desktop -->
+                            <!-- Opciones de Pago Desktop -->
                             <div class="flex gap-2 pt-2">
                                 <label class="flex-1 cursor-pointer">
                                     <input type="radio" name="payment_method_desktop" value="bancopel" checked class="peer sr-only" onchange="updatePaymentUI('desktop')">
@@ -495,11 +626,13 @@
                                     <div class="h-full flex items-center justify-center py-2 px-3 rounded-xl border-2 border-slate-100 peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 transition-all font-bold text-slate-500 text-xs text-center">💳 PayPal</div>
                                 </label>
                             </div>
-                            <div id="payment-info-box-desktop" class="text-[11px] font-medium text-slate-500 text-center bg-slate-50 p-3 rounded-xl mt-2">
+                            <!-- Información de Pago (Cuentas) -->
+                            <div id="payment-info-box-desktop" class="text-[11px] font-medium text-slate-500 text-center bg-slate-50 p-3 rounded-xl mt-2 border border-slate-100">
                                 <strong class="text-slate-900 block text-xs mb-1">Cta: 4169161465715158</strong>Envía tu comprobante por WhatsApp.
                             </div>
                         </div>
 
+                        <!-- Botón de Envío Desktop -->
                         <button onclick="processCheckout('desktop')" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-black py-5 rounded-2xl shadow-xl shadow-green-500/20 transition-all active:scale-95 text-lg flex items-center justify-center gap-3 group">
                             <span id="btn-checkout-text-desktop">APARTAR AHORA</span>
                             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
@@ -511,9 +644,11 @@
         </div>
     </section>
 
-    <!-- COMPONENTES MÓVILES (Mini Cart + Modal Bottom Sheet) -->
+    <!-- ========================================== -->
+    <!-- COMPONENTES MÓVILES EXCLUSIVOS             -->
+    <!-- ========================================== -->
     
-    <!-- Mini Carrito Flotante (Solo Mobile) -->
+    <!-- Mini Carrito Flotante (Solo visible en móviles cuando hay selección) -->
     <div id="mobile-mini-cart" class="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-slate-900 rounded-[2rem] shadow-2xl z-[150] flex justify-between items-center p-2 pl-6 transform translate-y-32 opacity-0 transition-all duration-500 ease-out border border-slate-700">
         <div class="flex flex-col">
             <span id="mobile-mini-count" class="text-green-400 font-bold text-[10px] uppercase tracking-widest">0 Boletos</span>
@@ -524,20 +659,22 @@
         </button>
     </div>
 
-    <!-- Modal Checkout (Bottom Sheet Solo Mobile) -->
+    <!-- Modal Checkout Tipo Bottom Sheet (Solo Móvil) -->
     <div id="mobile-checkout-modal" class="lg:hidden fixed inset-0 z-[250] hidden flex items-end justify-center pointer-events-none">
-        <!-- Overlay -->
+        
+        <!-- Overlay oscuro difuminado -->
         <div id="mobile-overlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm opacity-0 transition-opacity duration-300 pointer-events-auto" onclick="closeMobileCheckout()"></div>
 
-        <!-- Content Sheet -->
+        <!-- Contenido de la hoja inferior -->
         <div id="mobile-checkout-content" class="bg-white w-full max-h-[90vh] overflow-y-auto rounded-t-[2.5rem] shadow-2xl relative z-10 transform translate-y-full transition-transform duration-400 ease-out pointer-events-auto flex flex-col">
             
-            <!-- Handle Decorativo -->
+            <!-- Handle Decorativo Superior -->
             <div class="w-full flex justify-center pt-4 pb-2" onclick="closeMobileCheckout()">
                 <div class="w-12 h-1.5 bg-slate-200 rounded-full"></div>
             </div>
 
             <div class="p-6 md:p-8 flex flex-col gap-6">
+                <!-- Header del Modal -->
                 <div class="flex justify-between items-start">
                     <div>
                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] block mb-1">Resumen</span>
@@ -546,6 +683,7 @@
                     <button onclick="closeMobileCheckout()" class="w-10 h-10 bg-slate-50 text-slate-500 rounded-full flex items-center justify-center font-bold text-xl hover:bg-slate-100">&times;</button>
                 </div>
 
+                <!-- Boletos y Total -->
                 <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
                     <p class="text-xs font-bold text-slate-500 mb-2">Boletos Seleccionados:</p>
                     <p id="mobile-selected-tags" class="font-bebas text-xl text-slate-800 tracking-wider break-words mb-4">---</p>
@@ -555,12 +693,12 @@
                     </div>
                 </div>
 
-                <!-- Formulario Mobile -->
+                <!-- Formulario de Datos Mobile -->
                 <div class="space-y-4">
                     <input type="text" id="buyer-name-mobile" placeholder="Tu Nombre Completo" class="w-full bg-slate-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-green-500 focus:bg-white font-bold transition-all">
                     <input type="tel" id="buyer-phone-mobile" placeholder="WhatsApp (10 Dígitos)" class="w-full bg-slate-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-green-500 focus:bg-white font-bold transition-all">
                     
-                    <!-- Selección de Pago Mobile -->
+                    <!-- Opciones de Pago Mobile -->
                     <div class="flex gap-2">
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="payment_method_mobile" value="bancopel" checked class="peer sr-only" onchange="updatePaymentUI('mobile')">
@@ -571,11 +709,13 @@
                             <div class="h-full flex items-center justify-center py-3 px-2 rounded-xl border-2 border-slate-100 peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 transition-all font-bold text-slate-500 text-xs">💳 PayPal</div>
                         </label>
                     </div>
-                    <div id="payment-info-box-mobile" class="text-xs font-medium text-slate-500 text-center bg-slate-50 p-4 rounded-xl">
+                    <!-- Info Bancaria -->
+                    <div id="payment-info-box-mobile" class="text-xs font-medium text-slate-500 text-center bg-slate-50 p-4 rounded-xl border border-slate-100">
                         <strong class="text-slate-900 block text-sm mb-1">Cta: 4169161465715158</strong>Envía tu comprobante por WhatsApp.
                     </div>
                 </div>
 
+                <!-- Botón de Envío Mobile -->
                 <button onclick="processCheckout('mobile')" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 font-black py-5 rounded-2xl shadow-xl shadow-green-500/20 transition-all active:scale-95 text-xl flex items-center justify-center gap-3">
                     <span id="btn-checkout-text-mobile">APARTAR AHORA</span>
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
@@ -585,37 +725,167 @@
     </div>
 
 
+    <!-- ========================================== -->
+    <!-- SECCIÓN: TESTIMONIOS Y CONFIANZA TOTAL     -->
+    <!-- ========================================== -->
     <section class="py-32 bg-slate-50 border-y border-slate-100">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="grid md:grid-cols-12 gap-20 items-center">
-                <div class="md:col-span-5 reveal">
-                    <h2 class="text-5xl font-bebas text-slate-900 mb-8">Confianza <br> Total</h2>
-                    <p class="text-lg text-slate-500 leading-relaxed mb-10">Utilizamos tecnología de punta para asegurar que cada transacción sea registrada de forma inalterable. Nuestra comunidad crece día con día gracias a la honestidad en cada sorteo.</p>
-                    <div class="space-y-6">
+            <div class="grid md:grid-cols-12 gap-12 items-center">
+                
+                <!-- Info Confianza -->
+                <div class="md:col-span-4 reveal">
+                    <h2 class="text-5xl font-bebas text-slate-900 mb-6">Confianza <br> Total</h2>
+                    <p class="text-base text-slate-500 leading-relaxed mb-8">Utilizamos tecnología de punta para asegurar que cada transacción sea registrada de forma inalterable. Nuestra comunidad crece día con día gracias a la honestidad en cada sorteo.</p>
+                    <div class="space-y-4">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-green-500 text-slate-900 rounded-full flex items-center justify-center font-bold">✓</div>
-                            <span class="font-bold text-slate-800">Transparencia Notariada</span>
+                            <div class="w-10 h-10 bg-green-500 text-slate-900 rounded-full flex items-center justify-center font-bold shadow-md">✓</div>
+                            <span class="font-bold text-slate-800 text-sm">Transparencia Notariada</span>
                         </div>
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-green-500 text-slate-900 rounded-full flex items-center justify-center font-bold">✓</div>
-                            <span class="font-bold text-slate-800">Resultados Basados en Lotería Nacional</span>
+                            <div class="w-10 h-10 bg-green-500 text-slate-900 rounded-full flex items-center justify-center font-bold shadow-md">✓</div>
+                            <span class="font-bold text-slate-800 text-sm">Basado en Lotería Nacional</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-green-500 text-slate-900 rounded-full flex items-center justify-center font-bold shadow-md">✓</div>
+                            <span class="font-bold text-slate-800 text-sm">Entregas 100% Reales</span>
                         </div>
                     </div>
                 </div>
-                <div class="md:col-span-7 reveal" style="transition-delay: 200ms;">
-                    <div class="bg-white p-12 rounded-[3rem] shadow-xl border border-white">
-                        <div class="flex gap-1 mb-6 text-yellow-400">
-                            ★★★★★
-                        </div>
-                        <p class="text-2xl italic text-slate-700 leading-relaxed mb-10">"Nunca pensé que fuera tan fácil participar. El proceso por WhatsApp es súper rápido y me dio mucha confianza ver mi nombre en la página a los pocos minutos de pagar."</p>
-                        <div class="flex items-center gap-4">
-                            <div class="w-16 h-16 bg-slate-200 rounded-full overflow-hidden">
-                                <img src="https://i.pravatar.cc/150?u=1" alt="Avatar">
+                
+                <!-- Cuadrícula de Testimonios Extendida -->
+                <div class="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Testimonio 1 -->
+                    <div class="bg-white p-8 rounded-[2rem] shadow-lg border border-slate-100 reveal" style="transition-delay: 100ms;">
+                        <div class="flex gap-1 mb-4 text-yellow-400 text-sm">★★★★★</div>
+                        <p class="text-sm italic text-slate-600 leading-relaxed mb-6">"Nunca pensé que fuera tan fácil participar. El proceso por WhatsApp es súper rápido y me dio mucha confianza ver mi nombre en la página a los pocos minutos de pagar."</p>
+                        <div class="flex items-center gap-4 mt-auto">
+                            <div class="w-12 h-12 bg-slate-200 rounded-full overflow-hidden border-2 border-green-100">
+                                <img src="https://i.pravatar.cc/150?u=1" alt="Avatar Ricardo">
                             </div>
                             <div>
-                                <p class="font-bold text-slate-900">Ricardo M.</p>
-                                <p class="text-xs text-slate-400 uppercase tracking-widest">Participante de León, Gto.</p>
+                                <p class="font-bold text-slate-900 text-sm">Ricardo M.</p>
+                                <p class="text-[10px] text-slate-400 uppercase tracking-widest">León, Gto.</p>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonio 2 -->
+                    <div class="bg-white p-8 rounded-[2rem] shadow-lg border border-slate-100 reveal" style="transition-delay: 200ms;">
+                        <div class="flex gap-1 mb-4 text-yellow-400 text-sm">★★★★★</div>
+                        <p class="text-sm italic text-slate-600 leading-relaxed mb-6">"Gané en el sorteo pasado y la entrega fue inmediata. El equipo de Trébol 777 se portó muy profesional y me dieron todas las facilidades. 100% recomendados."</p>
+                        <div class="flex items-center gap-4 mt-auto">
+                            <div class="w-12 h-12 bg-slate-200 rounded-full overflow-hidden border-2 border-green-100">
+                                <img src="https://i.pravatar.cc/150?u=4" alt="Avatar Ana">
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900 text-sm">Ana Paula S.</p>
+                                <p class="text-[10px] text-slate-400 uppercase tracking-widest">CDMX</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonio 3 -->
+                    <div class="bg-white p-8 rounded-[2rem] shadow-lg border border-slate-100 reveal" style="transition-delay: 300ms;">
+                        <div class="flex gap-1 mb-4 text-yellow-400 text-sm">★★★★★</div>
+                        <p class="text-sm italic text-slate-600 leading-relaxed mb-6">"Siempre reviso los resultados con la Lotería Nacional, es imposible que hagan trampa. Compro boletos todos los meses porque los premios valen la pena."</p>
+                        <div class="flex items-center gap-4 mt-auto">
+                            <div class="w-12 h-12 bg-slate-200 rounded-full overflow-hidden border-2 border-green-100">
+                                <img src="https://i.pravatar.cc/150?u=3" alt="Avatar Carlos">
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900 text-sm">Carlos V.</p>
+                                <p class="text-[10px] text-slate-400 uppercase tracking-widest">Monterrey, NL.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonio 4 -->
+                    <div class="bg-white p-8 rounded-[2rem] shadow-lg border border-slate-100 reveal" style="transition-delay: 400ms;">
+                        <div class="flex gap-1 mb-4 text-yellow-400 text-sm">★★★★★</div>
+                        <p class="text-sm italic text-slate-600 leading-relaxed mb-6">"Me gusta que la página te permite ver en tiempo real si tus boletos ya fueron pagados. La atención por WhatsApp es de primera, resuelven tus dudas rápido."</p>
+                        <div class="flex items-center gap-4 mt-auto">
+                            <div class="w-12 h-12 bg-slate-200 rounded-full overflow-hidden border-2 border-green-100">
+                                <img src="https://i.pravatar.cc/150?u=5" alt="Avatar Maria">
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900 text-sm">María J.</p>
+                                <p class="text-[10px] text-slate-400 uppercase tracking-widest">Puebla, Pue.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- NUEVA SECCIÓN: GALERÍA DE GANADORES        -->
+    <!-- ========================================== -->
+    <section id="ganadores" class="py-32 px-6 bg-slate-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 reveal">
+                <span class="text-green-400 font-black text-xs uppercase tracking-[0.4em] mb-4 block">Ellos ya cambiaron su destino</span>
+                <h2 class="text-5xl md:text-7xl font-bebas text-white uppercase">Ganadores Anteriores</h2>
+                <p class="text-slate-400 mt-4 max-w-2xl mx-auto">Conoce a las personas que confiaron en Trébol 777 y se llevaron los premios mayores a casa.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Ganador 1 -->
+                <div class="winner-card bg-slate-800 rounded-[2rem] overflow-hidden border border-slate-700 reveal">
+                    <div class="h-48 bg-slate-700 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent z-10"></div>
+                        <!-- Placeholder visual para imagen del ganador -->
+                        <svg class="w-20 h-20 text-slate-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                        <div class="absolute bottom-4 left-6 z-20">
+                            <span class="bg-green-500 text-slate-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Sorteo #14</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h4 class="font-bebas text-3xl text-white mb-2">iPhone 15 Pro Max</h4>
+                        <p class="text-slate-400 text-sm mb-4">Entregado en Guadalajara, Jal.</p>
+                        <div class="flex justify-between items-center border-t border-slate-700 pt-4">
+                            <span class="text-xs text-slate-500 uppercase font-bold">Boleto Ganador:</span>
+                            <span class="text-green-400 font-bebas text-2xl">284</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ganador 2 -->
+                <div class="winner-card bg-slate-800 rounded-[2rem] overflow-hidden border border-slate-700 reveal" style="transition-delay: 150ms;">
+                    <div class="h-48 bg-slate-700 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent z-10"></div>
+                        <svg class="w-20 h-20 text-slate-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                        <div class="absolute bottom-4 left-6 z-20">
+                            <span class="bg-yellow-500 text-slate-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Sorteo #13</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h4 class="font-bebas text-3xl text-white mb-2">$20,000 MXN Efectivo</h4>
+                        <p class="text-slate-400 text-sm mb-4">Transferido a Monterrey, N.L.</p>
+                        <div class="flex justify-between items-center border-t border-slate-700 pt-4">
+                            <span class="text-xs text-slate-500 uppercase font-bold">Boleto Ganador:</span>
+                            <span class="text-yellow-400 font-bebas text-2xl">055</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ganador 3 -->
+                <div class="winner-card bg-slate-800 rounded-[2rem] overflow-hidden border border-slate-700 reveal" style="transition-delay: 300ms;">
+                    <div class="h-48 bg-slate-700 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent z-10"></div>
+                        <svg class="w-20 h-20 text-slate-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                        <div class="absolute bottom-4 left-6 z-20">
+                            <span class="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Sorteo #12</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h4 class="font-bebas text-3xl text-white mb-2">Apple Watch Series 9</h4>
+                        <p class="text-slate-400 text-sm mb-4">Entregado en CDMX.</p>
+                        <div class="flex justify-between items-center border-t border-slate-700 pt-4">
+                            <span class="text-xs text-slate-500 uppercase font-bold">Boleto Ganador:</span>
+                            <span class="text-blue-400 font-bebas text-2xl">319</span>
                         </div>
                     </div>
                 </div>
@@ -623,110 +893,233 @@
         </div>
     </section>
 
-    <!-- Preguntas Frecuentes -->
-    <section id="preguntas" class="py-32 px-6">
+    <!-- ========================================== -->
+    <!-- PREGUNTAS FRECUENTES (FAQ EXTENDIDO)       -->
+    <!-- ========================================== -->
+    <section id="preguntas" class="py-32 px-6 bg-white">
         <div class="max-w-4xl mx-auto">
             <h2 class="text-5xl font-bebas text-center text-slate-900 mb-20 uppercase tracking-wider">Preguntas Frecuentes</h2>
             
             <div class="space-y-6">
+                <!-- FAQ 1 -->
                 <div class="reveal">
-                    <button class="faq-btn w-full text-left bg-white p-8 rounded-[2rem] border border-slate-100 flex justify-between items-center group transition-all hover:border-green-200">
-                        <span class="text-lg font-bold text-slate-800">¿Cómo se elige al ganador?</span>
-                        <span class="text-2xl text-green-600">+</span>
+                    <button class="faq-btn w-full text-left bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 flex justify-between items-center group transition-all hover:border-green-300 focus:outline-none">
+                        <span class="text-base md:text-lg font-bold text-slate-800 pr-4">¿Cómo se elige al ganador de los sorteos?</span>
+                        <span class="text-2xl text-green-600 font-light flex-shrink-0">+</span>
                     </button>
-                    <div class="faq-content hidden px-8 pt-4 pb-8 text-slate-500 leading-relaxed">
-                        Nuestros sorteos están vinculados a los números premiados de la Lotería Nacional para la Asistencia Pública. Esto garantiza total imparcialidad y un sistema que todos pueden verificar externamente.
+                    <div class="faq-content hidden px-6 md:px-8 pt-4 pb-8 text-slate-500 text-sm md:text-base leading-relaxed border-x border-b border-slate-100 rounded-b-[2rem] -mt-6 bg-white">
+                        <br>Nuestros sorteos están vinculados estrechamente a los números premiados de la Lotería Nacional para la Asistencia Pública en México. Utilizamos las últimas cifras del premio mayor (según la cantidad de boletos emitidos). Esto garantiza total imparcialidad y permite que cualquier participante pueda verificar el resultado de forma externa y transparente.
                     </div>
                 </div>
                 
-                <div class="reveal" style="transition-delay: 100ms;">
-                    <button class="faq-btn w-full text-left bg-white p-8 rounded-[2rem] border border-slate-100 flex justify-between items-center group transition-all hover:border-green-200">
-                        <span class="text-lg font-bold text-slate-800">¿Qué pasa si el número premiado no se vendió?</span>
-                        <span class="text-2xl text-green-600">+</span>
+                <!-- FAQ 2 -->
+                <div class="reveal" style="transition-delay: 50ms;">
+                    <button class="faq-btn w-full text-left bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 flex justify-between items-center group transition-all hover:border-green-300 focus:outline-none">
+                        <span class="text-base md:text-lg font-bold text-slate-800 pr-4">¿Qué pasa si el número premiado no se vendió?</span>
+                        <span class="text-2xl text-green-600 font-light flex-shrink-0">+</span>
                     </button>
-                    <div class="faq-content hidden px-8 pt-4 pb-8 text-slate-500 leading-relaxed">
-                        En caso de que el número ganador no haya sido adquirido por ningún participante, el premio se acumula para el siguiente sorteo o se realiza una nueva dinámica anunciada previamente en nuestras redes sociales.
+                    <div class="faq-content hidden px-6 md:px-8 pt-4 pb-8 text-slate-500 text-sm md:text-base leading-relaxed border-x border-b border-slate-100 rounded-b-[2rem] -mt-6 bg-white">
+                        <br>En caso de que el número ganador marcado por la Lotería Nacional no haya sido adquirido por ningún participante en nuestra plataforma, el premio se acumula para el siguiente sorteo o, dependiendo del evento, se pospone la fecha a un sorteo posterior de la Lotería Nacional. Siempre publicamos en nuestras redes sociales oficiales el nuevo mecanismo.
                     </div>
                 </div>
 
-                <div class="reveal" style="transition-delay: 200ms;">
-                    <button class="faq-btn w-full text-left bg-white p-8 rounded-[2rem] border border-slate-100 flex justify-between items-center group transition-all hover:border-green-200">
-                        <span class="text-lg font-bold text-slate-800">¿Cuánto tiempo tengo para pagar mi reserva?</span>
-                        <span class="text-2xl text-green-600">+</span>
+                <!-- FAQ 3 -->
+                <div class="reveal" style="transition-delay: 100ms;">
+                    <button class="faq-btn w-full text-left bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 flex justify-between items-center group transition-all hover:border-green-300 focus:outline-none">
+                        <span class="text-base md:text-lg font-bold text-slate-800 pr-4">¿Cuánto tiempo tengo para pagar mi reserva?</span>
+                        <span class="text-2xl text-green-600 font-light flex-shrink-0">+</span>
                     </button>
-                    <div class="faq-content hidden px-8 pt-4 pb-8 text-slate-500 leading-relaxed">
-                        Una vez que realizas tu solicitud por el sistema, tienes un periodo de <strong>2 horas</strong> para enviar tu comprobante. Pasado este tiempo, si el boleto no es pagado, se marcará nuevamente como disponible y se liberará automáticamente para otros participantes.
+                    <div class="faq-content hidden px-6 md:px-8 pt-4 pb-8 text-slate-500 text-sm md:text-base leading-relaxed border-x border-b border-slate-100 rounded-b-[2rem] -mt-6 bg-white">
+                        <br>Una vez que realizas tu solicitud a través de esta página web, tienes un periodo de tolerancia máximo de <strong>2 horas</strong> para enviar tu comprobante de pago por WhatsApp al administrador. Si pasado este tiempo no se reporta el pago, el sistema marcará los boletos nuevamente como disponibles.
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="reveal" style="transition-delay: 150ms;">
+                    <button class="faq-btn w-full text-left bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 flex justify-between items-center group transition-all hover:border-green-300 focus:outline-none">
+                        <span class="text-base md:text-lg font-bold text-slate-800 pr-4">¿Cómo recibo el premio si gano y no vivo cerca?</span>
+                        <span class="text-2xl text-green-600 font-light flex-shrink-0">+</span>
+                    </button>
+                    <div class="faq-content hidden px-6 md:px-8 pt-4 pb-8 text-slate-500 text-sm md:text-base leading-relaxed border-x border-b border-slate-100 rounded-b-[2rem] -mt-6 bg-white">
+                        <br>¡No hay problema! Hacemos envíos seguros de tecnología y gadgets a toda la República Mexicana mediante paqueterías aseguradas (DHL/FedEx). Si el premio es en efectivo (como el segundo lugar), realizamos una transferencia bancaria electrónica directamente a la cuenta a nombre del ganador. Los costos de envío corren por nuestra cuenta.
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="reveal" style="transition-delay: 200ms;">
+                    <button class="faq-btn w-full text-left bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 flex justify-between items-center group transition-all hover:border-green-300 focus:outline-none">
+                        <span class="text-base md:text-lg font-bold text-slate-800 pr-4">¿Puedo pedir reembolso si decido ya no participar?</span>
+                        <span class="text-2xl text-green-600 font-light flex-shrink-0">+</span>
+                    </button>
+                    <div class="faq-content hidden px-6 md:px-8 pt-4 pb-8 text-slate-500 text-sm md:text-base leading-relaxed border-x border-b border-slate-100 rounded-b-[2rem] -mt-6 bg-white">
+                        <br>Por la naturaleza del sorteo y para garantizar la transparencia con todos los participantes, <strong>no existen reembolsos</strong> una vez que el pago ha sido validado y los boletos han sido asignados permanentemente a tu nombre en nuestra base de datos.
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="reveal" style="transition-delay: 250ms;">
+                    <button class="faq-btn w-full text-left bg-slate-50 p-6 md:p-8 rounded-[2rem] border border-slate-100 flex justify-between items-center group transition-all hover:border-green-300 focus:outline-none">
+                        <span class="text-base md:text-lg font-bold text-slate-800 pr-4">¿Qué debo hacer si me equivoco al ingresar mis datos?</span>
+                        <span class="text-2xl text-green-600 font-light flex-shrink-0">+</span>
+                    </button>
+                    <div class="faq-content hidden px-6 md:px-8 pt-4 pb-8 text-slate-500 text-sm md:text-base leading-relaxed border-x border-b border-slate-100 rounded-b-[2rem] -mt-6 bg-white">
+                        <br>Si cometiste un error al colocar tu nombre o número en el formulario de la página, por favor notifícalo <strong>inmediatamente</strong> cuando nos envíes el mensaje de WhatsApp con tu comprobante. Nuestro administrador podrá hacer la corrección manual en el sistema antes de publicar la lista final.
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer Profesional -->
+    <!-- ========================================== -->
+    <!-- TÉRMINOS Y CONDICIONES (BLOQUE LEGAL)      -->
+    <!-- ========================================== -->
+    <section id="terminos-legales" class="py-24 px-6 bg-slate-100 border-t border-slate-200">
+        <div class="max-w-4xl mx-auto">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6 uppercase tracking-widest text-center">Términos, Condiciones y Políticas</h3>
+            
+            <div class="bg-white p-8 md:p-12 rounded-[2rem] shadow-sm text-slate-600 text-sm leading-relaxed space-y-6 h-96 overflow-y-auto custom-scrollbar border border-slate-200">
+                
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-2 text-base">1. Naturaleza de la Plataforma</h4>
+                    <p>TRÉBOL 777 opera como una plataforma digital independiente de organización de sorteos entre particulares. No somos una casa de apuestas ni un casino. Nos regimos bajo los principios de transparencia y el uso de los resultados públicos emitidos por instituciones oficiales (Lotería Nacional) como mecanismo de selección de ganadores.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-2 text-base">2. Requisitos de los Participantes</h4>
+                    <p>Al adquirir un boleto, el participante declara ser mayor de 18 años y residir en la República Mexicana. Toda información proporcionada (Nombre completo y número de WhatsApp) debe ser real y comprobable. TRÉBOL 777 se reserva el derecho de anular boletos adquiridos con identidades falsas o robadas, sin derecho a reembolso.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-2 text-base">3. Mecánica y Base del Sorteo</h4>
+                    <p>El ganador será el participante cuyo número de boleto coincida exactamente con los últimos dígitos del Premio Mayor del sorteo especificado de la Lotería Nacional de México en la fecha anunciada. La cantidad de dígitos dependerá del total de boletos emitidos (ej. Si hay 1000 boletos, del 000 al 999, se usarán los últimos 3 dígitos).</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-2 text-base">4. Pagos y Cancelaciones</h4>
+                    <p>Las reservas generadas por el portal web tienen una vigencia estricta de 2 horas. Si el pago no es reflejado y comprobado mediante captura enviada al WhatsApp oficial en ese lapso, los boletos se cancelan automáticamente. No se aceptan pagos parciales. No existen devoluciones bajo ninguna circunstancia una vez asignado el boleto al cliente.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-2 text-base">5. Reclamación de Premios</h4>
+                    <p>El ganador será contactado por el administrador oficial al número de WhatsApp registrado. El ganador tiene un plazo máximo de 15 días naturales para reclamar su premio y proporcionar identificaciones oficiales (INE, Pasaporte) para la entrega. Si no es reclamado, el premio pasará a ser propiedad de los organizadores para un sorteo futuro.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-2 text-base">6. Aviso de Privacidad (Resumen)</h4>
+                    <p>Tus datos personales (Nombre y Teléfono) son recabados con la única finalidad de identificar la propiedad de los boletos adquiridos y contactarte en caso de resultar ganador. TRÉBOL 777 no vende, alquila ni distribuye bases de datos a terceros. Al utilizar esta plataforma, aceptas el almacenamiento temporal de dichos datos en nuestros servidores seguros (Supabase).</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-2 text-base">7. Fraude y Suplantación</h4>
+                    <p>Únicamente nos hacemos responsables por pagos realizados a las cuentas oficiales publicadas en esta página web y confirmados por nuestro número oficial de WhatsApp. No caigas en fraudes, no tenemos intermediarios ni cobradores externos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- FOOTER PROFESIONAL Y ENLACES               -->
+    <!-- ========================================== -->
     <footer class="bg-slate-950 text-slate-400 py-32 px-6">
         <div class="max-w-7xl mx-auto">
+            
             <div class="grid md:grid-cols-12 gap-20 items-start mb-24">
+                
+                <!-- Columna Izquierda: Logo y Misión -->
                 <div class="md:col-span-5">
                     <div class="flex items-center gap-4 mb-8">
-                        <img src="https://lh3.googleusercontent.com/d/10iQ1Yhi1_3o7EOn1d1913JUjoOKyRhAa" alt="Logo" class="w-16 h-16 object-contain bg-white rounded-2xl p-1 shadow-sm">
+                        <img src="https://lh3.googleusercontent.com/d/10iQ1Yhi1_3o7EOn1d1913JUjoOKyRhAa" alt="Logo Trébol 777" class="w-16 h-16 object-contain bg-white rounded-2xl p-1 shadow-sm">
                         <h5 class="font-bebas text-5xl text-[#fbbf24] tracking-wide">SORTEOS TRÉBOL 777</h5>
                     </div>
-                    <p class="text-lg leading-relaxed max-w-md mb-12">Impulsando sueños y creando ganadores a través de la plataforma de sorteos más innovadora y segura de la región.</p>
+                    <p class="text-lg leading-relaxed max-w-md mb-8">Impulsando sueños y creando ganadores a través de la plataforma de sorteos más innovadora, segura y transparente de la región. Únete a nuestra comunidad de afortunados.</p>
+                    
+                    <!-- Insignias de Seguridad visuales -->
+                    <div class="flex gap-4">
+                        <div class="bg-slate-900 px-4 py-2 rounded-lg text-[10px] font-bold border border-slate-800 flex items-center gap-2">
+                            🔒 COMPRA SEGURA
+                        </div>
+                        <div class="bg-slate-900 px-4 py-2 rounded-lg text-[10px] font-bold border border-slate-800 flex items-center gap-2">
+                            🛡️ DATOS PROTEGIDOS
+                        </div>
+                    </div>
                 </div>
                 
+                <!-- Columna Central: Navegación Rápida -->
                 <div class="md:col-span-3">
                     <p class="text-xs uppercase font-black tracking-[0.3em] text-slate-600 mb-8">Navegación</p>
                     <ul class="space-y-4 font-bold text-slate-500">
                         <li><a href="#proceso" class="hover:text-green-500 transition-colors">Nuestro Proceso</a></li>
                         <li><a href="#boletos" class="hover:text-green-500 transition-colors">Lista de Boletos</a></li>
                         <li><a href="#verificar" class="hover:text-green-500 transition-colors">Consulta de Registro</a></li>
+                        <li><a href="#ganadores" class="hover:text-green-500 transition-colors">Galería de Ganadores</a></li>
                         <li><a href="#preguntas" class="hover:text-green-500 transition-colors">Centro de Ayuda</a></li>
+                        <li><a href="#terminos-legales" class="hover:text-green-500 transition-colors">Términos y Condiciones</a></li>
                     </ul>
                 </div>
 
+                <!-- Columna Derecha: Contacto CTA -->
                 <div class="md:col-span-4 flex flex-col items-center md:items-end">
-                    <p class="text-xs uppercase font-black tracking-[0.3em] text-slate-600 mb-8">Atención Directa</p>
-                    <a href="https://wa.me/524774551728" target="_blank" class="bg-green-500 hover:bg-green-400 text-slate-900 px-10 py-6 rounded-[2.5rem] font-black shadow-2xl transition-all flex items-center gap-4 text-xl shadow-green-900/30">
+                    <p class="text-xs uppercase font-black tracking-[0.3em] text-slate-600 mb-8 text-center md:text-right">Atención Directa</p>
+                    
+                    <!-- Botón WhatsApp Principal -->
+                    <a href="https://wa.me/524774551728" target="_blank" class="bg-green-500 hover:bg-green-400 text-slate-900 px-10 py-6 rounded-[2.5rem] font-black shadow-2xl transition-all flex items-center gap-4 text-xl shadow-green-900/30 mb-6">
                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
-                        WHATSAPP
+                        WHATSAPP OFICIAL
                     </a>
+                    <p class="text-xs text-slate-500 text-center md:text-right">Horario de atención: 9:00 AM - 9:00 PM</p>
                 </div>
             </div>
             
+            <!-- Derechos y Enlace a Admin -->
             <div class="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] uppercase font-black tracking-widest text-slate-600">
-                <p>© 2024 Trébol 777. Plataforma operada bajo términos de transparencia absoluta.</p>
-                <!-- ENLACE AL PANEL DE ADMINISTRACIÓN AGREGADO AQUÍ -->
-                <a href="admin_trebol.html" target="_blank" class="hover:text-green-500 transition-colors flex items-center gap-2" title="Acceso a Panel de Administración">
+                <p>© 2024-2025 Trébol 777. Plataforma operada bajo términos de transparencia absoluta.</p>
+                
+                <!-- ENLACE AL PANEL DE ADMINISTRACIÓN CORREGIDO A RUTA ABSOLUTA -->
+                <a href="https://julio-22.github.io/Sorteos_TREBOL/admin.html" class="hover:text-green-500 transition-colors flex items-center gap-2 bg-slate-900/50 px-4 py-2 rounded-lg" title="Acceso a Panel de Administración">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    Admin
+                    Panel Administrativo
                 </a>
             </div>
         </div>
     </footer>
 
-    <!-- Enlace de Facebook agregado al final del cuerpo -->
-    <div class="bg-slate-950 pb-12 flex justify-center border-t border-slate-800 pt-8">
-        <a href="https://www.facebook.com/share/1BCRMJ3vHD/?mibextid=wwXIfr" target="_blank" class="bg-[#1877F2] hover:bg-[#166fe5] text-white px-8 py-4 rounded-full transition-all flex items-center gap-3 text-sm font-bold shadow-lg shadow-blue-900/20 hover:scale-105">
+    <!-- ========================================== -->
+    <!-- BANNER INFERIOR DE REDES SOCIALES          -->
+    <!-- ========================================== -->
+    <div class="bg-slate-950 pb-8 flex justify-center border-t border-slate-900">
+        <!-- BOTÓN DE FACEBOOK CORREGIDO PARA SER GRANDE Y VISIBLE -->
+        <a href="https://www.facebook.com/share/1BCRMJ3vHD/?mibextid=wwXIfr" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white transition-all duration-300 flex items-center gap-3 text-sm md:text-base uppercase font-black tracking-widest px-8 py-4 rounded-2xl shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:shadow-[0_15px_30px_rgba(37,99,235,0.4)] hover:-translate-y-1">
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            SÍGUENOS EN FACEBOOK
+            SÍGUENOS EN NUESTRO FACEBOOK OFICIAL
         </a>
     </div>
 
+    <!-- ========================================== -->
+    <!-- LÓGICA DE JAVASCRIPT Y CONTROL DE DATOS    -->
+    <!-- ========================================== -->
     <script>
+        // Configuración de Supabase (Credenciales Públicas Seguras para Frontend)
         const SUPABASE_URL = 'https://bltlprtphzejinwqdwdo.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsdGxwcnRwaHplamlud3Fkd2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyOTE5OTQsImV4cCI6MjA4OTg2Nzk5NH0.01xGJOVgNaBg_QOclD0h-Hb2PIu7svpCdi2xJi2MQbU';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
+        // Variables Globales de Configuración del Sorteo
         const ADMIN_WHATSAPP = "524774551728"; 
         const TICKET_PRICE = 200; 
-        const TOTAL_TICKETS = 400;
-        let selectedTickets = [];
+        const TOTAL_TICKETS = 400; // Define el tamaño máximo de la grilla
+        let selectedTickets = []; // Almacena temporalmente los números escogidos por el usuario
 
-        // Inicializar Rejilla de Boletos
+        /**
+         * Inicializa la Rejilla visual de Boletos
+         * Genera los DIVs para cada número del 000 al límite establecido.
+         */
         async function initializeGrid() {
             const grid = document.getElementById('tickets-grid');
-            grid.innerHTML = '';
+            grid.innerHTML = ''; // Limpiar previo
             
+            // Fragmento de documento para mayor rendimiento al renderizar
+            const fragment = document.createDocumentFragment();
+
             for (let i = 0; i < TOTAL_TICKETS; i++) {
                 const numStr = String(i).padStart(3, '0');
                 const card = document.createElement('div');
@@ -734,16 +1127,23 @@
                 card.textContent = numStr;
                 card.dataset.number = numStr;
                 card.onclick = () => toggleTicket(numStr);
-                grid.appendChild(card);
+                fragment.appendChild(card);
             }
             
+            grid.appendChild(fragment);
+            
+            // Carga inicial y configuración del polling
             await syncTickets();
-            setInterval(syncTickets, 5000);
+            setInterval(syncTickets, 5000); // Consulta la DB cada 5 segundos
         }
 
-        // Sincronizar Boletos Vendidos
+        /**
+         * Sincroniza la lista de boletos vendidos con la base de datos (Supabase)
+         * Se ejecuta de forma asíncrona y continua en segundo plano.
+         */
         async function syncTickets() {
             try {
+                // Solo pedimos la columna 'ticket_number' para optimizar la carga útil
                 const { data, error } = await supabaseClient
                     .from('tickets')
                     .select('ticket_number');
@@ -751,6 +1151,7 @@
                 if (error) throw error;
                 
                 if (data) {
+                    // Limpiar el estado de 'vendido' para evitar desincronizaciones si se borran registros en DB
                     document.querySelectorAll('.ticket-card.sold').forEach(el => el.classList.remove('sold'));
                     
                     data.forEach(t => {
@@ -759,99 +1160,121 @@
                         
                         if (el) {
                             el.classList.add('sold');
-                            // Remover de carrito si fue comprado por otro
+                            // Si el usuario actual tenía seleccionado un boleto que acaba de ser comprado por otro, se lo quitamos
                             if (el.classList.contains('selected')) {
                                 el.classList.remove('selected');
                                 const idx = selectedTickets.indexOf(num);
                                 if (idx > -1) selectedTickets.splice(idx, 1);
-                                updateCart();
+                                updateCart(); // Refrescar totales y UI
                             }
                         }
                     });
                 }
             } catch (err) {
-                console.error("Error sincronización:", err);
+                console.error("Error sincronización en tiempo real:", err);
             }
         }
 
-        // NUEVO: Función centralizada para alternar boletos (Manejo Asíncrono)
+        /**
+         * Función centralizada para alternar la selección de un boleto
+         * @param {string} num - El número de boleto a alternar (ej. "045")
+         */
         function toggleTicket(num) {
             const el = document.querySelector(`.ticket-card[data-number="${num}"]`);
+            
+            // Prevención: No hacer nada si está vendido
             if (el && el.classList.contains('sold')) return;
             
             const idx = selectedTickets.indexOf(num);
             if (idx > -1) {
+                // Ya estaba seleccionado -> lo quitamos
                 selectedTickets.splice(idx, 1);
                 if(el) el.classList.remove('selected');
             } else {
+                // No estaba seleccionado -> lo agregamos
                 selectedTickets.push(num);
                 if(el) el.classList.add('selected');
             }
             
+            // Actualizar la interfaz gráfica de los carritos de compra
             updateCart();
         }
 
-        // NUEVO: Actualizar UI del Carrito (Desktop y Mobile)
+        /**
+         * Actualizar la interfaz de usuario del Carrito (Desktop y Mobile)
+         * Muestra/Oculta modales, actualiza sumas de precios y renderiza etiquetas.
+         */
         function updateCart() {
-            // Elementos Desktop
+            // Referencias a Elementos UI Desktop
             const desktopEmpty = document.getElementById('desktop-empty-cart');
             const desktopActive = document.getElementById('desktop-active-cart');
             const desktopTags = document.getElementById('desktop-selected-tags');
             const desktopTotal = document.getElementById('desktop-total');
 
-            // Elementos Mobile
+            // Referencias a Elementos UI Mobile
             const mobileMiniCart = document.getElementById('mobile-mini-cart');
             const mobileCount = document.getElementById('mobile-mini-count');
             const mobileTotal = document.getElementById('mobile-mini-total');
 
             if (selectedTickets.length > 0) {
                 const totalValue = `$${(selectedTickets.length * TICKET_PRICE).toLocaleString()} MXN`;
-                const sorted = [...selectedTickets].sort();
+                const sorted = [...selectedTickets].sort(); // Ordenar numéricamente para mejor visualización
 
-                // Actualizar Desktop
+                // ------------------
+                // Lógica Desktop
+                // ------------------
                 desktopEmpty.classList.add('hidden');
                 desktopActive.classList.remove('hidden');
                 desktopActive.classList.add('flex');
                 
+                // Inyectar HTML para los tags de números
                 desktopTags.innerHTML = sorted.map(t => `
-                    <div class="bg-green-100 border border-green-200 text-green-800 font-bebas text-xl px-4 py-2 rounded-xl flex items-center gap-3 group transition-all hover:bg-red-50 hover:border-red-200 hover:text-red-500 cursor-pointer" onclick="toggleTicket('${t}')">
+                    <div class="bg-green-100 border border-green-200 text-green-800 font-bebas text-xl px-4 py-2 rounded-xl flex items-center gap-3 group transition-all hover:bg-red-50 hover:border-red-200 hover:text-red-500 cursor-pointer" onclick="toggleTicket('${t}')" title="Clic para eliminar">
                         ${t}
                         <span class="text-sm">×</span>
                     </div>
                 `).join('');
                 desktopTotal.textContent = totalValue;
 
-                // Actualizar Mobile
+                // ------------------
+                // Lógica Mobile
+                // ------------------
                 mobileMiniCart.classList.remove('translate-y-32', 'opacity-0');
                 mobileCount.textContent = `${selectedTickets.length} Boleto${selectedTickets.length > 1 ? 's' : ''}`;
                 mobileTotal.textContent = totalValue;
                 
-                // Actualizar Modal (si está abierto)
+                // Si el Modal (Bottom Sheet) ya está abierto, también se actualizan sus textos
                 document.getElementById('mobile-selected-tags').textContent = sorted.join(', ');
                 document.getElementById('mobile-total-modal').textContent = totalValue;
 
             } else {
-                // Restaurar Desktop
+                // Reversión al Estado Vacío
+                
+                // Desktop
                 desktopEmpty.classList.remove('hidden');
                 desktopActive.classList.add('hidden');
                 desktopActive.classList.remove('flex');
 
-                // Ocultar Mobile
+                // Mobile
                 mobileMiniCart.classList.add('translate-y-32', 'opacity-0');
-                closeMobileCheckout();
+                closeMobileCheckout(); // Forzar cierre si el usuario quita el último boleto dentro del modal
             }
         }
 
-        // Modales y Bottom Sheets (Mobile)
+        // ============================================
+        // FUNCIONES DE CONTROL DE MODALES (MÓVIL)
+        // ============================================
+        
         function openMobileCheckout() {
             if(selectedTickets.length === 0) return;
             const modal = document.getElementById('mobile-checkout-modal');
             const overlay = document.getElementById('mobile-overlay');
             const content = document.getElementById('mobile-checkout-content');
             
-            document.body.classList.add('no-scroll');
+            document.body.classList.add('no-scroll'); // Prevenir scroll del body detrás del modal
             modal.classList.remove('hidden');
             
+            // Forzar reflow para asegurar las transiciones CSS
             setTimeout(() => {
                 overlay.classList.remove('opacity-0');
                 content.classList.remove('translate-y-full');
@@ -867,71 +1290,101 @@
             overlay.classList.add('opacity-0');
             content.classList.add('translate-y-full');
             
+            // Esperar a que acabe la animación antes de ocultar el elemento por completo (display:none)
             setTimeout(() => {
                 modal.classList.add('hidden');
-            }, 300); // Coincide con la transición CSS
+            }, 300); // 300ms coincide con la transición CSS
         }
 
-        // Lógica de Pago Adaptativa
+        // ============================================
+        // LÓGICA DE PAGO Y CHECKOUT
+        // ============================================
+
+        /**
+         * Actualiza el texto descriptivo del método de pago seleccionado.
+         * @param {string} platform - "desktop" o "mobile" dependiendo desde dónde se ejecuta.
+         */
         function updatePaymentUI(platform) {
             const method = document.querySelector(`input[name="payment_method_${platform}"]:checked`).value;
             const infoBox = document.getElementById(`payment-info-box-${platform}`);
             const btnText = document.getElementById(`btn-checkout-text-${platform}`);
             
             if(method === 'bancopel') {
-                infoBox.innerHTML = '<strong class="text-slate-900 block text-sm mb-1">Cta: 4169161465715158</strong>Envía tu comprobante por WhatsApp.';
+                infoBox.innerHTML = '<strong class="text-slate-900 block text-sm mb-1">Cta: 4169161465715158</strong>Envía tu comprobante por WhatsApp para validar.';
                 btnText.textContent = 'APARTAR AHORA';
             } else {
-                infoBox.innerHTML = '<strong class="text-blue-800 block text-sm mb-1">Pago con PayPal</strong>Solicitaremos tu cuenta vía WhatsApp.';
+                infoBox.innerHTML = '<strong class="text-blue-800 block text-sm mb-1">Pago seguro con PayPal</strong>Se solicitará un enlace de cobro por WhatsApp.';
                 btnText.textContent = 'PAGAR CON PAYPAL';
             }
         }
 
+        /**
+         * Procesa los datos y genera el enlace para enviar el mensaje por WhatsApp
+         * @param {string} platform - Identifica si la llamada viene de Desktop o Mobile
+         */
         function processCheckout(platform) {
+            // Recolección de datos
             const name = document.getElementById(`buyer-name-${platform}`).value.trim();
             const phone = document.getElementById(`buyer-phone-${platform}`).value.trim();
             
+            // Validación Básica Front-end
             if(!name || !phone) { 
-                alert("Completa tu Nombre y WhatsApp para reservar tus boletos."); 
+                alert("Por favor, completa tu Nombre y número de WhatsApp para poder reservar tus boletos."); 
                 return; 
+            }
+            if(phone.length < 10) {
+                alert("Verifica que tu número de WhatsApp sea de al menos 10 dígitos.");
+                return;
             }
             
             const method = document.querySelector(`input[name="payment_method_${platform}"]:checked`).value;
             const total = (selectedTickets.length * TICKET_PRICE).toLocaleString();
             let text = '';
             
+            // Generación dinámica del mensaje (Encoded URL parameters)
             if (method === 'bancopel') {
-                text = `🍀 *RESERVA TRÉBOL 777*%0A👤 *Participante:* ${name}%0A📱 *WhatsApp:* ${phone}%0A🎟️ *Números:* ${selectedTickets.join(', ')}%0A💰 *Inversión:* $${total} MXN%0A🏦 *Método:* BancoPel%0A%0A _*Adjunto mi comprobante para confirmar.*_`;
+                text = `🍀 *RESERVA TRÉBOL 777*%0A👤 *Participante:* ${name}%0A📱 *WhatsApp:* ${phone}%0A🎟️ *Números:* ${selectedTickets.join(', ')}%0A💰 *Inversión:* $${total} MXN%0A🏦 *Método:* Transferencia / Depósito BancoPel%0A%0A _*¡Hola! Adjunto mi comprobante para confirmar la compra de mis boletos.*_`;
             } else {
-                text = `🍀 *RESERVA TRÉBOL 777*%0A👤 *Participante:* ${name}%0A📱 *WhatsApp:* ${phone}%0A🎟️ *Números:* ${selectedTickets.join(', ')}%0A💰 *Inversión:* $${total} MXN%0A💳 *Método:* PayPal%0A%0A _*Hola, solicítenme el pago a mi correo:*_`;
+                text = `🍀 *RESERVA TRÉBOL 777*%0A👤 *Participante:* ${name}%0A📱 *WhatsApp:* ${phone}%0A🎟️ *Números:* ${selectedTickets.join(', ')}%0A💰 *Inversión:* $${total} MXN%0A💳 *Método:* PayPal%0A%0A _*¡Hola! Deseo realizar el pago de estos boletos mediante PayPal, ¿me podrían generar un link de cobro?*_`;
             }
             
-            window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${text}`);
+            // Redirección a la API de WhatsApp
+            window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${text}`, '_blank');
         }
 
-        // Buscador de grilla
+        // ============================================
+        // LÓGICAS SECUNDARIAS (Buscador, Verificador, Animaciones)
+        // ============================================
+
+        // Buscador reactivo dentro de la grilla principal
         document.getElementById('search-ticket-grid').addEventListener('input', (e) => {
             const val = e.target.value.trim();
             document.querySelectorAll('.ticket-card').forEach(card => {
+                // Si el dataset string incluye el valor tipado, se muestra, si no, se oculta
                 card.style.display = card.dataset.number.includes(val) ? 'flex' : 'none';
             });
         });
 
-        // Verificador de boletos del cliente
+        /**
+         * Consulta en Supabase el estatus de un cliente mediante su teléfono
+         */
         async function verifyTicketsDB() {
             const phoneSearch = document.getElementById('verify-phone').value.trim();
             const resultsDiv = document.getElementById('verification-results');
             const btn = document.getElementById('btn-verify');
             const btnText = document.getElementById('btn-verify-text');
             
+            // Prevención para evitar consultas en blanco
             if (!phoneSearch || phoneSearch.length < 5) return;
 
+            // Feedback visual: Estado de Carga
             btn.disabled = true;
             btnText.innerHTML = '<span class="loader"></span> BUSCANDO...';
             resultsDiv.classList.remove('hidden');
             resultsDiv.innerHTML = `<div class="flex justify-center py-10"><div class="loader-dark"></div></div>`;
 
             try {
+                // Consulta a la tabla customers anidando la relación foránea de tickets
                 const { data, error } = await supabaseClient
                     .from('customers')
                     .select('full_name, tickets!fk_cliente(ticket_number)')
@@ -939,11 +1392,12 @@
 
                 if (error) throw error;
 
+                // Evaluando resultados
                 if (!data || data.length === 0 || !data[0].tickets || data[0].tickets.length === 0) {
                     resultsDiv.innerHTML = `
                     <div class="bg-red-500/10 border border-red-500/30 p-10 rounded-[2.5rem] text-center fade-in">
                         <p class="text-red-400 font-bold text-xl">Registro no encontrado</p>
-                        <p class="text-slate-500 mt-2">Asegúrate de haber enviado tu comprobante por WhatsApp.</p>
+                        <p class="text-slate-500 mt-2">No hallamos boletos asociados a ese número. Asegúrate de haber enviado tu comprobante por WhatsApp y esperar a que el administrador lo valide.</p>
                     </div>`;
                 } else {
                     const clientName = data[0].full_name || "Participante Trébol";
@@ -952,15 +1406,16 @@
                     let html = `
                     <div class="bg-white/5 border border-green-500/30 rounded-[3rem] p-10 md:p-14 fade-in">
                         <div class="text-center mb-12">
-                            <span class="text-green-500 font-black text-[10px] uppercase tracking-[0.5em] block mb-2">Participante Verificado</span>
+                            <span class="text-green-500 font-black text-[10px] uppercase tracking-[0.5em] block mb-2">Participante Oficial Verificado</span>
                             <h3 class="text-5xl font-bebas text-white">${clientName}</h3>
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">`;
                     
+                    // Renderizar los números en cajas visuales
                     boletos.sort((a,b) => a.ticket_number - b.ticket_number).forEach(t => {
                         html += `
-                        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl text-center">
-                            <span class="text-4xl font-bebas text-green-400">${String(t.ticket_number).padStart(3, '0')}</span>
+                        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl text-center shadow-lg shadow-black/20">
+                            <span class="text-4xl font-bebas text-green-400 drop-shadow-md">${String(t.ticket_number).padStart(3, '0')}</span>
                         </div>`;
                     });
                     
@@ -968,40 +1423,46 @@
                     resultsDiv.innerHTML = html;
                 }
             } catch (err) {
-                console.error("Error consulta:", err);
-                resultsDiv.innerHTML = `<div class="bg-red-500/20 p-8 rounded-2xl text-red-400 text-center">Error de conexión. Intente más tarde.</div>`;
+                console.error("Error consulta de verificación:", err);
+                resultsDiv.innerHTML = `<div class="bg-red-500/20 p-8 rounded-2xl text-red-400 text-center">Error de conexión con el servidor. Por favor, intenta más tarde.</div>`;
             } finally {
+                // Restaurar estado del botón
                 btn.disabled = false;
                 btnText.textContent = 'CONSULTAR MIS BOLETOS';
             }
         }
 
-        // Animación de aparición
+        /**
+         * ScrollReveal Vanilla JavaScript
+         * Evalúa la posición de elementos con clase '.reveal' y les agrega '.active' al entrar en viewport
+         */
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
             for (var i = 0; i < reveals.length; i++) {
                 var windowHeight = window.innerHeight;
                 var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 150;
+                var elementVisible = 150; // offset
                 if (elementTop < windowHeight - elementVisible) {
                     reveals[i].classList.add("active");
                 }
             }
         }
 
-        // FAQ Toggle
+        // Despliegue tipo Acordeón para Preguntas Frecuentes
         document.querySelectorAll('.faq-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const content = btn.nextElementSibling;
                 content.classList.toggle('hidden');
+                // Alternar el icono entre '+' y '−'
                 btn.querySelector('span:last-child').textContent = content.classList.contains('hidden') ? '+' : '−';
             });
         });
 
+        // Configuración Inicial de la Página
         window.onload = () => {
-            initializeGrid();
-            window.addEventListener("scroll", reveal);
-            reveal();
+            initializeGrid(); // Levantar boletos
+            window.addEventListener("scroll", reveal); // Escuchar scroll para animaciones
+            reveal(); // Trigger inicial para elementos en el primer view
         };
     </script>
 </body>
